@@ -6,7 +6,7 @@
     "permissions": ["storage"],
 
     "background": {
-        "service_worker": "scripts/background.js"
+        "service_worker": "scripts/service_worker.js"
       },
 
       "content_scripts": [
