@@ -1,6 +1,6 @@
 {
     "name": "youtube-frens-extension",
-    "description": "An extension to share youtube sessions with and maybe without friends",
+    "description": "an extension to share youtube sessions",
     "version": "0.1",
     "manifest_version": 3,
     "permissions": ["storage"],
