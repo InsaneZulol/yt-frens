@@ -5,7 +5,8 @@ function insertDebugPanel() {
     info_.insertAdjacentHTML('afterbegin', `
         <div class='debug_panel'>
             <p>DEBUG PANEL KURWA TEN<p><br>
-            <p>Your room id is <p> <p class="dbg_room_id_nr"></p>
+            <h3>Your room id is </h3> <p class="dbg_room_id_nr"></p>
+            <br>
             <h2>Join</h2>
             <input type="text" id="roomId" name="room" minlength="1" maxlength="4" size="4">
             <button class="dbg-join_btn" type="button" onclick="join_room()">Join</button> <br>
