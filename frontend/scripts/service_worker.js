@@ -1,4 +1,9 @@
-// background.js
+try {
+  self.importScripts('./bundles/supabase/supa_rtdb_bundle.js');
+  console.log('IMPORTED');
+} catch (err) {
+  console.log(err);
+}
 
 let color = '#3aa757';
 
