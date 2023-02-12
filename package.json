@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.7.1",
-    "plasmo": "0.64.5",
+    "plasmo": "0.65.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

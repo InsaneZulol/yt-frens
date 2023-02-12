@@ -1,17 +1,6 @@
 import { useState } from "react"
 import { supabase } from "~/store"
 
-async function getCountries() {
-  const countries = await supabase.from('countries').select()
-  console.log(countries)
-}
-
-try {
-  console.log("get countries lol");   
-  getCountries();
-} catch (err) {
-  console.log(err);
-}
 function IndexPopup() {
   const [data, setData] = useState("")
   return (
