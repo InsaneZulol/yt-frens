@@ -8,19 +8,18 @@ export const config: PlasmoCSConfig = {
   run_at: "document_idle" // wydaje mi się, że nie musimy to robić w idle. Poprostu injectować dopiero jak obiekt się pojawi, on event.
 }
 
-// const channel = supabase.channel('test');
+// SUPABASE
 const channel = supabase.channel('receipt', {
   config: {
     broadcast: { ack: true },
   },
 })
 
-async function getCountries() {
-  const countries = await supabase.from('countries').select()
-  console.log(countries)
-};
+// listen
+channel
+  .on('broadcast', { event: 'supa' }, (payload) => console.log(payload))
+  .subscribe();
 
-// to nie jest w DOM
 async function send_message() {
   console.log("sending message");
   const resp = await channel.send({
@@ -30,6 +29,8 @@ async function send_message() {
   })
   console.log(resp);
 };
+// ENDOF Supabase
+
 
 
 function insert_debug_panel() {
@@ -47,51 +48,11 @@ function insert_debug_panel() {
       <button class="dbg-create_btn" type="button" onclick="create_room()">Create</button>
       </div>
       `);
-      
-  // test
+  // test: simple supabase send message. Todo: join_room()  functionality instead 
   let elem_btn_ = document.querySelector('.dbg-join_btn');
-  elem_btn_.addEventListener('click', () => {
-    console.log("click xd message");
-    chrome.runtime.sendMessage("onclick_msg", function () {
-      if (chrome.runtime.lastError) {
-        console.log("error during sendMessage from contentscript: "
-          + chrome.runtime.lastError.message);
-      }
-    });
-  });
+  elem_btn_.addEventListener('click', send_message);
 }
-
-chrome.runtime.onMessage.addListener((msg, sender, response) => {
-  debugger;
-  console.log("LISTENER ACTION:");
-  try {
-    switch (msg.action) {
-      case 'onclick_msg':
-        {
-          console.log("In cs. Msg is: " + msg);
-          // send_message();
-          response("clicked");
-          break;
-        }
-      default:
-        console.log("Unknown message");
-    }
-  } catch (e) {
-    response(e);
-  }
-});
 
 console.log('content script injected');
 setTimeout(insert_debug_panel, 1200); // ładowanie skryptu na document_idle nie wystarcza
                                       // todo: change it to async await till this dom object exists or something
-
-
-
-
-
-// listen
-channel
-  .on('broadcast', { event: 'supa' }, (payload) => console.log(payload))
-  .subscribe();
-
-
