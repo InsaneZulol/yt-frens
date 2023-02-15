@@ -1,6 +1,5 @@
 .debug_panel {
     width: 400px;
-    /* border: 5px solid red; */
     border-radius: 15px;
     border-radius: 20px;
     padding: 20px;
@@ -10,4 +9,9 @@
     margin: 2px;
     background-color: #272727;
     box-shadow: 3px 3px 5px #191919;
+}
+
+.dbg-room_id_nr {
+    width: 200px;
+    color: green;
 }

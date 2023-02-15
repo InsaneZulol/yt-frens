@@ -7,8 +7,7 @@ const channel = supabase.channel('receipt', {
 });
 
 async function send_message() {
-    console.log("sending message");
-    //send
+    console.log("sending message from react page");
     const resp = await channel.send({
         type: 'broadcast',
         event: 'supa',
