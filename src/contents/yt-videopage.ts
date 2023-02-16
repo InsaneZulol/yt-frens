@@ -8,24 +8,26 @@ export const config: PlasmoCSConfig = {
   run_at: "document_idle" // wydaje mi się, że nie musimy to robić w idle. Poprostu injectować dopiero jak obiekt się pojawi, on event.
 }
 
+var video_ = document.querySelector('video');
+
 // SUPABASE
-
 var channel = supabase.channel('default');
-
-// send, broadcast 'supa' event
-async function send_message() {
-  console.log("sending message");
+// send, broadcast 'video-time-pos' event
+async function send_update_message(time_: number) {
+  const begin = performance.now();
   const resp = await channel.send({
     type: 'broadcast',
-    event: 'supa',
-    payload: { org: 'supabase' },
-  })
+    event: 'video-time-pos',
+    payload: { time: time_ },
+  });
+  const end = performance.now()
+  console.log(`sent video time update message, RTT is ${end - begin} milliseconds`);
   console.log(resp);
 };
 
-async function join_room(name: string, room: string) : Promise<boolean> {
+async function join_room(name: string, room: string): Promise<boolean> {
 
-  let ret  = false;
+  let ret = false;
   channel = supabase.channel(room, {
     config: {
       broadcast: { ack: true },
@@ -34,34 +36,39 @@ async function join_room(name: string, room: string) : Promise<boolean> {
 
   // listen to supabase broadcast events - general messages
   channel
-    .on('broadcast', { event: 'supa' }, (payload) => console.log(payload));
+    .on('broadcast', { event: 'video-time-pos' }, function (message) {
+      video_.currentTime = message.payload.time;
+      return console.log(message.payload.time);
+    });
 
   // listen to sync messages presesence events
   channel
     .on('presence', { event: 'sync' }, () => {
       const state = channel.presenceState();
-      console.log("presence state: ", state);
+      console.log("on sync, current presence state is", state);
     });
 
   // listen to join presence events
   channel
     .on('presence', { event: 'join' }, ({ key, newPresences }) => {
-      console.log("user joined ", key, newPresences);
+      console.log("user", name, "joined,", "this presence key", key, newPresences);
     });
 
   // listen to leave presence events
   channel
     .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-      console.log("user ", name , "left", key, leftPresences);
+      console.log("user", name, "left", key, leftPresences);
     });
 
   // subscribe to channel and track presence
   channel.subscribe(async (status) => {
     if (status === 'SUBSCRIBED') {
-      console.log("joined ", " as ", name);
+      console.log('succesfuly joined room', room, 'as', name);
       const presenceTrackStatus = await channel.track({
         user: name,
         online_at: new Date().toISOString(),
+        is_dj: name == 'Michal' ? true : false,
+        video_at: video_.currentTime
       });
       console.log("status: ", presenceTrackStatus);
       ret = true;
@@ -73,6 +80,7 @@ async function join_room(name: string, room: string) : Promise<boolean> {
 
 
 function insert_debug_panel() {
+  // root object we attach the panel to
   let elem_info_ = document.querySelector('#above-the-fold');
   // https://developer.mozilla.org/pl/docs/Web/API/Element/insertAdjacentHTML
   elem_info_.insertAdjacentHTML('afterbegin', `
@@ -84,19 +92,27 @@ function insert_debug_panel() {
         <input type="text" id="roomId" name="room" minlength="1" maxlength="4" size="3">
         as <input type="text" id="nameId" name="nameField" minlength="1" maxlength="10" size="4" value="Banan">
         <button class="dbg-join_btn" type="button" onclick="">Join/Create</button> <br>
+        <button class="dbg-update_btn" type="button" onclick="">Update others</button> <br>
       </div>
       `);
   let elem_name_field = document.getElementById('nameId') as HTMLInputElement | null;
   let elem_room_field = document.getElementById('roomId') as HTMLInputElement | null;
+  let elem_update_btn_ = document.querySelector('.dbg-update_btn');
   let elem_join_btn_ = document.querySelector('.dbg-join_btn');
   let elem_room_id = document.querySelector('.dbg-room_id_nr');
+
   elem_join_btn_.addEventListener('click', () => {
     const name_value = elem_name_field?.value;
     const room_value = elem_room_field?.value;
-    console.log('trying to join room ', room_value, ' as ', name_value);
+    console.log('trying to join room', room_value, 'as', name_value);
     if (join_room(name_value, room_value)) {
       elem_room_id.innerHTML = room_value + ", as " + name_value;
-    }
+    };
+  });
+
+  elem_update_btn_.addEventListener('click', () => {
+    console.log('updating others');
+    send_update_message(video_.currentTime);
   });
 }
 
