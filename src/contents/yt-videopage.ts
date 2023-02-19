@@ -8,16 +8,19 @@ export const config: PlasmoCSConfig = {
   run_at: "document_idle" // wydaje mi się, że nie musimy to robić w idle. Poprostu injectować dopiero jak obiekt się pojawi, on event.
 }
 
+// Przykład użycia pokojów w demo supabase realtime demo https://github.com/supabase/realtime/blob/main/demo/pages/%5B...slug%5D.tsx
+
 var video_ = document.querySelector('video');
 
 // SUPABASE
 var channel = supabase.channel('default');
-// send, broadcast 'video-time-pos' event
+const VIDEO_STATE_EVENT = 'vid-state'
+// send, broadcast 'vid-state' event
 async function send_update_message(time_: number) {
   const begin = performance.now();
   const resp = await channel.send({
     type: 'broadcast',
-    event: 'video-time-pos',
+    event: VIDEO_STATE_EVENT,
     payload: { time: time_ },
   });
   const end = performance.now()
@@ -36,12 +39,13 @@ async function join_room(name: string, room: string): Promise<boolean> {
 
   // listen to supabase broadcast events - general messages
   channel
-    .on('broadcast', { event: 'video-time-pos' }, function (message) {
+    .on('broadcast', { event: 'vid-state' }, function (message) {
       video_.currentTime = message.payload.time;
       return console.log(message.payload.time);
     });
 
   // listen to sync messages presesence events
+  // We can subscribe to all Presence changes using the 'presence' -> 'sync' event.
   channel
     .on('presence', { event: 'sync' }, () => {
       const state = channel.presenceState();
@@ -83,18 +87,19 @@ function insert_debug_panel() {
   // root object we attach the panel to
   let elem_info_ = document.querySelector('#above-the-fold');
   // https://developer.mozilla.org/pl/docs/Web/API/Element/insertAdjacentHTML
-  elem_info_.insertAdjacentHTML('afterbegin', `
-      <div class='debug_panel'>
-        <p>DEBUG PANEL KURWA TEN<p><br>
-        Your room id is <span class="dbg-room_id_nr"></span>
-        <br>
-        <h2>Join</h2>
-        <input type="text" id="roomId" name="room" minlength="1" maxlength="4" size="3">
-        as <input type="text" id="nameId" name="nameField" minlength="1" maxlength="10" size="4" value="Banan">
-        <button class="dbg-join_btn" type="button" onclick="">Join/Create</button> <br>
-        <button class="dbg-update_btn" type="button" onclick="">Update others</button> <br>
-      </div>
-      `);
+  elem_info_.insertAdjacentHTML('afterbegin', /*html*/ `
+    <div class='debug_panel'>
+      <p>DEBUG PANEL KURWA TEN<p><br>
+      Your room id is <span class="dbg-room_id_nr"></span>
+      <br>
+      <h2>Join</h2>
+      <input type="text" id="roomId" name="room" minlength="1" maxlength="4" size="3">
+      as <input type="text" id="nameId" name="nameField" minlength="1" maxlength="10" size="4" value="Banan">
+      <button class="dbg-join_btn" type="button" onclick="">Join/Create</button> <br>
+      <button class="dbg-update_btn" type="button" onclick="">Update others</button> <br>
+    </div>
+    `);
+
   let elem_name_field = document.getElementById('nameId') as HTMLInputElement | null;
   let elem_room_field = document.getElementById('roomId') as HTMLInputElement | null;
   let elem_update_btn_ = document.querySelector('.dbg-update_btn');
