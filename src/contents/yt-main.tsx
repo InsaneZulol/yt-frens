@@ -1,7 +1,6 @@
 // - Pobrać liste friendsów z bazy danych i wyświetlić na homepage/, videopage/,
 // - Zacząć trackować presence friendsów(i widzieć na jakim są channelu)
 // - Zacząć od spróbowania integracji reacta w tym CS.
-import test from "node:test";
 import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo"
 import type { PlasmoGetOverlayAnchor } from "plasmo"
 import { supabase } from "~/store"
@@ -13,10 +12,13 @@ export const config: PlasmoCSConfig = {
   css: ["./yt-style.css"],
 }
 
+// React CS UI
+// https://docs.plasmo.com/framework/content-scripts-ui
+// sidenote: gdyby element by siedział płycej, to by stał w miejscu w czasie scrollowania.
 export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
-  document.querySelector("#header");
+document.querySelector("#guide-inner-content #sections :not(:first-child) #items "); 
 
-const CustomButton = () => {
+const FriendList = () => {
   return <div
     style={{
       background: "red",
@@ -25,23 +27,11 @@ const CustomButton = () => {
       fontSize: 20,
       borderRadius: "20px",
       height: 250,
-      width: 220,
-      marginLeft: 10,
-      marginTop: 10,
-      // position: "relative",
-      // left: "400px"
+      width: 180,
+      marginTop: 8
     }}
-    className="huj">
+    className="friend_list">
       Friends
   </div>
 }
-export default CustomButton
-
-// React CS UI
-// https://docs.plasmo.com/framework/content-scripts-ui
-
-// export const render = async ({ createRootContainer }) => {
-//   const rootContainer = await createRootContainer()
-//   const root = createRoot(rootContainer)
-//   root.render(<PlasmoOverlay />)
-// }
+export default FriendList
