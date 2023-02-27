@@ -10,6 +10,7 @@
     "package": "plasmo package"
   },
   "dependencies": {
+    "@plasmohq/storage": "^1.1.1",
     "@supabase/supabase-js": "^2.7.1",
     "plasmo": "0.65.0",
     "react": "18.2.0",

@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@plasmohq/prettier-plugin-sort-imports': 3.6.1
+  '@plasmohq/storage': ^1.1.1
   '@supabase/supabase-js': ^2.7.1
   '@types/chrome': 0.0.210
   '@types/node': 18.11.18
@@ -14,6 +15,7 @@ specifiers:
   typescript: 4.9.4
 
 dependencies:
+  '@plasmohq/storage': 1.1.1_react@18.2.0
   '@supabase/supabase-js': 2.7.1
   plasmo: 0.65.0_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
@@ -1889,6 +1891,17 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@plasmohq/storage/1.1.1_react@18.2.0:
+    resolution: {integrity: sha512-UDBIE5RF/ASfLeDQLnZ1vlv6OFhtqYpJjB1UntNT3hmT9SXdOdVdI4kc5i9e9u0JRB1rylc2kjKDcOlY1H121A==}
+    peerDependencies:
+      react: ^16.8.6 || ^17 || ^18
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /@pnpm/network.ca-file/1.0.2:
     resolution: {integrity: sha512-YcPQ8a0jwYU9bTdJDpXjMi7Brhkr1mXsXrUJvjqM2mQDgkRiz8jFaQGOdaLxgjtUfQgZhKy/O3cG/YwmgKaxLA==}

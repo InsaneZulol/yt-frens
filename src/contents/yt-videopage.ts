@@ -5,7 +5,7 @@ export const config: PlasmoCSConfig = {
   matches: ["https://www.youtube.com/watch?v=*", "http://www.youtube.com/watch?v=*"],
   all_frames: true,
   css: ["./yt-style.css"],
-  run_at: "document_idle" // wydaje mi się, że nie musimy to robić w idle. Poprostu injectować dopiero jak obiekt się pojawi, on event.
+  run_at: "document_idle" // todo: zweryfikować, chyba nie potrzeba idle
 }
 
 // Przykład użycia pokojów w demo supabase realtime demo https://github.com/supabase/realtime/blob/main/demo/pages/%5B...slug%5D.tsx
@@ -124,3 +124,4 @@ function insert_debug_panel() {
 console.log('content script execute');
 setTimeout(insert_debug_panel, 1200); // ładowanie skryptu na document_idle nie wystarcza
                                       // todo: change it to async await till this dom object exists or something
+                                      //  upd: plasmo getAnchor rozwiązuje ten problem. Todo: zamienić ten raw injection na plasmo cs ui.
