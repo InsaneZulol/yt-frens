@@ -1,11 +1,10 @@
 // Otwórz:
 // chrome-extension://hjaihfdidlafclpldffcgdjpgfhfdjgf/tabs/login-page.html
 import type { Session } from "@supabase/supabase-js";
-import { supabase, SET_AUTH_SESSION_STORAGE } from "~/store"
+import { supabase } from "~/store"
 
 // JWT_EXPIRY można zmienic w
 // https://app.supabase.com/project/hbhqngbhfuawgnuvwauf/settings/auth
-
 
 async function signUpEmail(event) {
     event.preventDefault();
@@ -27,13 +26,7 @@ async function signInEmail(event) {
         email: event.target.email.value,
         password: event.target.password.value
     });
-    console.log('login data:', data, 'error:', error);
-
-    if (!error) {
-        const auth_session: Session = (await supabase.auth.getSession()).data.session;
-        await SET_AUTH_SESSION_STORAGE(auth_session);
-        // The refresh token can only be used once to obtain a new session.
-    }
+    console.debug('login data:', data, 'error:', error);
 }
 
 function LoginPage() {

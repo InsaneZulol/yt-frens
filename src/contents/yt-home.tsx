@@ -2,7 +2,6 @@
 // - Zacząć trackować presence friendsów(i widzieć na jakim są channelu)
 // - Zacząć od spróbowania integracji reacta w tym CS.
 import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo"
-import { supabase } from "~/store"
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.youtube.com/", "http://www.youtube.com/"],
