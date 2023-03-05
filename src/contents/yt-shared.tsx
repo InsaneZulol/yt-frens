@@ -18,11 +18,11 @@ export const config: PlasmoCSConfig = {
 
 async function retrieveSessionFromStorage() {
   const { data, error } = await supabase.auth.getSession();
-  if(!error) {
+  if(!error && data.session != null) {
     console.debug("Session retrieved", data);
   }
   else {
-    console.debug("Failed to retrieve session. Are you not logged in?", error);
+    console.debug("Failed to retrieve session. Are you not logged in?", data, error);
   }
 }
 
