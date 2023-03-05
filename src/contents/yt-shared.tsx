@@ -1,9 +1,10 @@
 // This file state should be shared and ontop.
 import { supabase } from "~store";
-import { isLoggedIn, login } from "~auth";
-import type { PlasmoCSConfig } from "plasmo";
+import { isLoggedIn, login, logout, useSession } from "~auth";
+import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
 import type { Session } from "@supabase/supabase-js";
 import LoginModal from "~/ui_components/login-modal";
+import { useState } from "react";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.youtube.com/*", "http://www.youtube.com/*"],
@@ -67,16 +68,24 @@ async function retrieveSessionFromStorage() {
 // export default CustomButton
 
 export const RenderUI = () => {
-  
-  let test_: boolean = async () => {
-    await Promise.resolve(isLoggedIn());
-  };
-  console.log("test: ", test_);
-  if (async (): boolean => await isLoggedIn()) {
-    return (<LoginModal></LoginModal>);
+  console.log('>> gdzie jest panel?')
+  const sessionStatus = useSession();
+
+  if (sessionStatus === 'loading') {
+    return <>Loading...</>
   }
-  // else return (<div></div>)
-  // else render friends buttons and stuff
+
+  if (sessionStatus === 'unauthenticated') {
+    return (<>
+      <LoginModal></LoginModal>
+    </>);
+  }
+
+  return <>
+    Jesteś kurwa zalogowany!
+    {sessionStatus}
+    <button onClick={() => logout()}>Wyloguj</button>
+  </>
 }
 
 export default RenderUI;
