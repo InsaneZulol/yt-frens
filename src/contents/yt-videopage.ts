@@ -1,5 +1,5 @@
 import type { PlasmoCSConfig } from "plasmo"
-import { supabase } from "~/store"
+import { supabase } from "~store";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.youtube.com/watch?v=*", "http://www.youtube.com/watch?v=*"],

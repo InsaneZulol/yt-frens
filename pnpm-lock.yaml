@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@plasmohq/messaging': ^0.1.4
   '@plasmohq/prettier-plugin-sort-imports': 3.6.1
   '@plasmohq/storage': ^1.1.1
   '@supabase/supabase-js': ^2.7.1
@@ -15,6 +16,7 @@ specifiers:
   typescript: 4.9.4
 
 dependencies:
+  '@plasmohq/messaging': 0.1.4_react@18.2.0
   '@plasmohq/storage': 1.1.1_react@18.2.0
   '@supabase/supabase-js': 2.7.1
   plasmo: 0.65.0_biqbaboplfbrettd7655fr4n2y
@@ -1582,6 +1584,17 @@ packages:
 
   /@plasmohq/init/0.6.0:
     resolution: {integrity: sha512-qoSRgQI5+IPBA3II7GDnc45bRycOZa7V7Gb/VrbE+ifXOplzyvdl7DWgH1OmUgzAoNtXcMcqUHILhhrTpX3PPw==}
+    dev: false
+
+  /@plasmohq/messaging/0.1.4_react@18.2.0:
+    resolution: {integrity: sha512-B51Hft6SBYu8oHq0X24/DTFGodzDcZfHeUWG3xNJmCcrBMlgUY1dctIQfLmrJWsaJA13nX3q3ek78SfsTdmyLA==}
+    peerDependencies:
+      react: ^16.8.6 || ^17 || ^18
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@plasmohq/parcel-bundler/0.4.6:
