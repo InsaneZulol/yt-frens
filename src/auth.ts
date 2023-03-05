@@ -42,7 +42,7 @@ export const useSession = () => {
 
     const handleSessionStatusChange = (session) => {
         console.log('>> handleSessionstatuschange', session);
-       if (session && session?.user?.role === 'authenticated') {
+       if (session?.data?.session?.user || session?.user) {
             setSessionStatus('logged_in');
        } else {
             setSessionStatus('unauthenticated');
