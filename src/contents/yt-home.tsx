@@ -3,6 +3,7 @@
 // - Zacząć od spróbowania integracji reacta w tym CS.
 import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo"
 import { supabase } from "~store";
+import { useState, useEffect } from "react";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.youtube.com/", "http://www.youtube.com/"],
@@ -11,27 +12,49 @@ export const config: PlasmoCSConfig = {
   css: ["./yt-style.css"],
 }
 
-async function getFriends() {
-  // 1. read our id from local storage user
-  // 2. compare our id with each row in of column 1 and column 2
-  // 3. get row where our id is present, filter only for the other guy
-  const my_id = (await supabase.auth.getUser()).data.user.id;
-
-  
-  let query = supabase.from('friendships').select('friends[]');
-  // const { data: friends, error } = await query;
+// 1. get row where our id is present. This should be done on SQL side,
+//    I've enabled RLS so we should be getting only the row with our uid. 
+// 2. read array[], store
+async function getFriends(): Promise<Array<string>> {
+  let query = supabase.from('friendships').select('friends');
   const { data, error } = await query;
-  console.log(JSON.stringify(data, null, 2));
+  return data[0].friends;
 }
+
+(async function init() {
+  await getFriends();
+})();
 
 // React CS UI
 // https://docs.plasmo.com/framework/content-scripts-ui
-// sidenote: gdyby element by siedział płycej, to by stał w miejscu w czasie scrollowania.
 export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
   document.querySelector("#guide-inner-content #sections :not(:first-child) #items ");
 
 const FriendList = () => {
-  // await getFriends();
+  const [friends, setFriends] = useState([]);
+  console.log('friend list rendered');
+
+  const fetchFriends = async () => {
+    const arr = await getFriends();
+    setFriends(arr);
+  }
+
+  useEffect(() => {
+    fetchFriends();
+    // cleanup nie mam pomysłu
+  }, []);
+
+  // todo: each friend listItem a separate compontent
+  const listItems = friends.map((friend, index) =>
+    <button
+      key={index} //
+      style={{
+        // backgroundColor: friend.isOnline ? 'green' : 'grey'
+        // stan isOnline będzie pobierany z presence
+      }}>
+      {friend}
+    </button>
+  );
 
   return <div
     style={{
@@ -46,6 +69,9 @@ const FriendList = () => {
     }}
     className="friend_list">
     Friends
+    <ul>
+      {listItems}
+    </ul>
   </div>
 }
 export default FriendList

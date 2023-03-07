@@ -1,6 +1,5 @@
 import { login } from "~auth";
 
-
 const LoginModal = () => {
 
     const handleLogin = (event) => {

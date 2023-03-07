@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "~store";
 
-export interface LoginCredentials {
-    email: string;
-    password: string;
-}
-
 export async function isLoggedIn(): Promise<boolean> {
     return (await (supabase.auth.getSession())).data.session !== null
 }
@@ -23,8 +18,6 @@ export async function logout() {
     await supabase.auth.signOut();
 }
 
-type SessionStatus = 'loading' | 'logged_in' | 'unauthenticated';
-
 export const useSession = () => {
     const [sessionStatus, setSessionStatus] = useState<SessionStatus>('loading');
 
@@ -32,7 +25,6 @@ export const useSession = () => {
         supabase.auth.getSession().then((session) => {
             handleSessionStatusChange(session);
         });
-
 
         supabase.auth.onAuthStateChange((_event, session) => {
             console.log('>>> auth state channnge!!')
@@ -42,12 +34,17 @@ export const useSession = () => {
 
     const handleSessionStatusChange = (session) => {
         console.log('>> handleSessionstatuschange', session);
-       if (session?.data?.session?.user || session?.user) {
+        if (session?.data?.session?.user || session?.user)
             setSessionStatus('logged_in');
-       } else {
+        else
             setSessionStatus('unauthenticated');
-       }
     }
-
     return sessionStatus;
+}
+
+type SessionStatus = 'loading' | 'logged_in' | 'unauthenticated';
+
+export interface LoginCredentials {
+    email: string;
+    password: string;
 }
