@@ -2,27 +2,18 @@
 // - Zacząć trackować presence friendsów(i widzieć na jakim są channelu)
 // - Zacząć od spróbowania integracji reacta w tym CS.
 import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo"
-import { supabase } from "~store";
 import { useState, useEffect } from "react";
+import { getFriendsExtraDataFromDb, getFriendsUuidsFromDb } from "~db";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.youtube.com/", "http://www.youtube.com/"],
   all_frames: true,
   run_at: "document_idle",
   css: ["./yt-style.css"],
-}
-
-// 1. get row where our id is present. This should be done on SQL side,
-//    I've enabled RLS so we should be getting only the row with our uid. 
-// 2. read array[], store
-async function getFriends(): Promise<Array<string>> {
-  let query = supabase.from('friendships').select('friends');
-  const { data, error } = await query;
-  return data[0].friends;
-}
+};
 
 (async function init() {
-  await getFriends();
+  await getFriendsUuidsFromDb();
 })();
 
 // React CS UI
@@ -32,27 +23,28 @@ export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
 
 const FriendList = () => {
   const [friends, setFriends] = useState([]);
-  console.log('friend list rendered');
+  console.log('friend list renderedx');
 
   const fetchFriends = async () => {
-    const arr = await getFriends();
-    setFriends(arr);
+    const uuid_arr = await getFriendsUuidsFromDb(); // return an array of uuid's of our friends
+    // get extra friend data based on uuid
+    const friends_arr = await getFriendsExtraDataFromDb(uuid_arr);
+    setFriends(friends_arr);
   }
 
   useEffect(() => {
     fetchFriends();
-    // cleanup nie mam pomysłu
   }, []);
-
+  
   // todo: each friend listItem a separate compontent
   const listItems = friends.map((friend, index) =>
     <button
-      key={index} //
+      key={friend.user_id} //
       style={{
         // backgroundColor: friend.isOnline ? 'green' : 'grey'
         // stan isOnline będzie pobierany z presence
       }}>
-      {friend}
+      {friend.nickname}
     </button>
   );
 
