@@ -9,46 +9,54 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      extra_user_data: {
-        Row: {
-          created_at: string | null
-          id: number
-          nick_name: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: number
-          nick_name?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: number
-          nick_name?: string | null
-        }
-      }
       friendships: {
         Row: {
           accepted_on: string | null
           friends: string[] | null
-          friendship_id: number
+          id: number
           user_id: string | null
         }
         Insert: {
           accepted_on?: string | null
           friends?: string[] | null
-          friendship_id?: number
+          id?: number
           user_id?: string | null
         }
         Update: {
           accepted_on?: string | null
           friends?: string[] | null
-          friendship_id?: number
+          id?: number
+          user_id?: string | null
+        }
+      }
+      user_data: {
+        Row: {
+          friends: string[] | null
+          id: number
+          nickname: string | null
+          user_id: string | null
+        }
+        Insert: {
+          friends?: string[] | null
+          id?: number
+          nickname?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          friends?: string[] | null
+          id?: number
+          nickname?: string | null
           user_id?: string | null
         }
       }
     }
     Views: {
-      [_ in never]: never
+      view_my_friends: {
+        Row: {
+          nickname: string | null
+          user_id: string | null
+        }
+      }
     }
     Functions: {
       [_ in never]: never

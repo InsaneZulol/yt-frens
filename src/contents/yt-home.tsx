@@ -3,7 +3,7 @@
 // - Zacząć od spróbowania integracji reacta w tym CS.
 import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo"
 import { useState, useEffect } from "react";
-import { getFriendsExtraDataFromDb, getFriendsUuidsFromDb } from "~db";
+import { fetchMyFriendsFromDB } from "~db";
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.youtube.com/", "http://www.youtube.com/"],
@@ -13,7 +13,7 @@ export const config: PlasmoCSConfig = {
 };
 
 (async function init() {
-  await getFriendsUuidsFromDb();
+  await fetchMyFriendsFromDB();
 })();
 
 // React CS UI
@@ -26,16 +26,14 @@ const FriendList = () => {
   console.log('friend list renderedx');
 
   const fetchFriends = async () => {
-    const uuid_arr = await getFriendsUuidsFromDb(); // return an array of uuid's of our friends
-    // get extra friend data based on uuid
-    const friends_arr = await getFriendsExtraDataFromDb(uuid_arr);
+    const friends_arr = await fetchMyFriendsFromDB();
     setFriends(friends_arr);
   }
 
   useEffect(() => {
     fetchFriends();
   }, []);
-  
+
   // todo: each friend listItem a separate compontent
   const listItems = friends.map((friend, index) =>
     <button
