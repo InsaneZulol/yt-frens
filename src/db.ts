@@ -1,6 +1,6 @@
 import { supabase } from "~store";
 
-// get data based on uuids passed in array param
+// returns array of objects
 export async function fetchMyFriendsFromDB(): Promise<Array<any>> {
     let query = supabase.from('view_my_friends').select('*');
     const { data, error } = await query;
