@@ -12,6 +12,7 @@ const FriendList = () => {
 
     useEffect(() => {
         fetchFriends();
+        // now open channels and set connection with those friends to get their status live
     }, []);
 
     // todo: each friend listItem a separate compontent

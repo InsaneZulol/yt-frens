@@ -39,7 +39,7 @@ async function join_room(name: string, room: string): Promise<boolean> {
 
   // listen to supabase broadcast events - general messages
   channel
-    .on('broadcast', { event: 'vid-state' }, function (message) {
+    .on('broadcast', { event: VIDEO_STATE_EVENT }, function (message) {
       video_.currentTime = message.payload.time;
       return console.log(message.payload.time);
     });
@@ -68,6 +68,7 @@ async function join_room(name: string, room: string): Promise<boolean> {
   channel.subscribe(async (status) => {
     if (status === 'SUBSCRIBED') {
       console.log('succesfuly joined room', room, 'as', name);
+      // track as in for presence to track us
       const presenceTrackStatus = await channel.track({
         user: name,
         online_at: new Date().toISOString(),
