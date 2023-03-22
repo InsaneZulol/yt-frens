@@ -3,7 +3,9 @@ import { supabase } from "~store";
 
 
 export const useFriendStatus = () => {
-    const [friendStatus, setSessionStatus] = useState<FriendStatus>('offline');
+    const [friendStatus, setFriendStatus] = useState<FriendStatus>('offline');
+
+
 
 }
 

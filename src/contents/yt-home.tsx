@@ -14,7 +14,6 @@ export const config: PlasmoCSConfig = {
 };
 
 (async function init() {
-  // await fetchMyFriendsFromDB();
 })();
 
 // React CS UI
