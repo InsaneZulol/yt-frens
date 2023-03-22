@@ -1,6 +1,6 @@
 // This file state should be shared and ontop.
 import { supabase } from "~store";
-import { logout, useSession } from "~auth";
+import { isLoggedIn, logout, useSession } from "~auth";
 import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
 import LoginModal from "~/ui_components/login-modal";
 import { sendHeartbeat } from "~db";
@@ -15,14 +15,27 @@ async function initiateHeartbeat() {
   setInterval(sendHeartbeat, 15000);
 }
 
+async function launchStatusCh() {
+  const my_activity_ch = supabase.channel(`activity_ch_` + (await supabase.auth.getSession()).data.session.user.id);
+  my_activity_ch.subscribe(async (status) => {
+    if (status === 'SUBSCRIBED') {
+      console.log('wooow created activity channel wowowowo');
+      // 
+    };
+  });
+}
+
 // IIFE
 (async function init() {
 
   // let my_uid = (await supabase.auth.getSession()).data.session.user.id;
   // let the server know we are online:
-  // 1. start updating our own online status every 5sec on the database table
+  // 1. start updating our own online status every 15sec on the database table
   // 2. friend-list component will start listening for changes on the table for our friends
   initiateHeartbeat();
+  if (isLoggedIn()) {
+    launchStatusCh();
+  }
 
 
   // const { data, error } = await supabase.auth.signUp({

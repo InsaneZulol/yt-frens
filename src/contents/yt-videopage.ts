@@ -17,14 +17,14 @@ var channel = supabase.channel('default');
 const VIDEO_STATE_EVENT = 'vid-state'
 // send, broadcast 'vid-state' event
 async function send_update_message(time_: number) {
-  const begin = performance.now();
+  // const begin = performance.now();
   const resp = await channel.send({
     type: 'broadcast',
     event: VIDEO_STATE_EVENT,
     payload: { time: time_ },
   });
-  const end = performance.now()
-  console.log(`sent video time update message, RTT is ${end - begin} milliseconds`);
+  // const end = performance.now()
+  // console.log(`sent video time update message, RTT is ${end - begin} milliseconds`);
   console.log(resp);
 };
 
