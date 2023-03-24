@@ -8,7 +8,7 @@ export const config: PlasmoCSConfig = {
   run_at: "document_idle" // todo: zweryfikować, chyba nie potrzeba idle
 }
 
-// Przykład użycia pokojów w demo supabase realtime demo https://github.com/supabase/realtime/blob/main/demo/pages/%5B...slug%5D.tsx
+//  użycia pokojów w demo supabase realtime demo https://github.com/supabase/realtime/blob/main/demo/pages/%5B...slug%5D.tsx
 
 var video_ = document.querySelector('video');
 

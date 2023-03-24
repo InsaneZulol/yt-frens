@@ -11,12 +11,9 @@ export const useFriendActivity = () => {
 }
 
 export const Friend = (props) => {
-    // const last_seen = props.last_seen;
-    const userdata_changes_ch = supabase.channel('changes');
-
-
     const [friendStatus, setFriendStatus] = useState<FriendStatus>('unknown');
     // const [friendActivity, setFriendActivity] = useState<string>('no_connection');
+    const friend_activity_ch = supabase.channel(`activity_ch_` + props.uuid);
 
     function calcFriendStatus(_last_seen) {
         const now = new Date();
@@ -33,18 +30,19 @@ export const Friend = (props) => {
 
     // subscribes to activity channel of this friend
     const subscribe = async () => {
-        const friend_activity_ch = supabase.channel(`activity_ch_` + props.uuid);
         friend_activity_ch.subscribe(async (status) => {
-            if (status === 'SUBSCRIBED') {
+            if (status === 'SUBSCRIBED')
                 console.log('=== congratulations you moron, you are subscribing to ', props.nickname, 'activity!===');
-            }
-            else console.log("oops ", status);
+            else
+                console.log("oops ", status);
         });
     }
 
     useEffect(() => {
         // listen to this friend's status changes in db
-        userdata_changes_ch.on(
+        console.log(`creating event handler for ${props.uuid}`);
+        console.log(props.realtimeChannel);
+        props.realtimeChannel.on(
             'postgres_changes',
             {
                 event: 'UPDATE',
@@ -53,11 +51,16 @@ export const Friend = (props) => {
                 filter: `user_id=eq.${props.uuid}`
             }, (payload) => {
                 console.log('o kurwa table change', payload);
-            });
+                console.log('xx this friend is', calcFriendStatus(payload.new.last_seen));
 
-        subscribe().then(() => {
-            console.log('sub');
-        });
+            });
+        if (friendStatus == 'online') {
+            subscribe().then(() => {
+                console.log('sub activity');
+            });
+        }
+        // todo: this event should trigger setState/pass prop or something so our friend component
+        // potentially [reconnects to/disconnects from] the channel 
     }, []);
 
     return <div

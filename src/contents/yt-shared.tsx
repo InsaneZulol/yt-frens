@@ -12,6 +12,7 @@ export const config: PlasmoCSConfig = {
 };
 
 async function initiateHeartbeat() {
+  sendHeartbeat();
   setInterval(sendHeartbeat, 15000);
 }
 
