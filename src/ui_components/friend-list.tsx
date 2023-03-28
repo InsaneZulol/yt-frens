@@ -8,8 +8,6 @@ const FriendList = () => {
     console.log('friend list rendered');
     const [friends, setFriends] = useState([]);
     const [postgresChangesCh, setPostgresChangesCh] = useState<RealtimeChannel>(null);
-    console.log("postgresChangesCh::", postgresChangesCh)
-
 
     const fetchFriends = async () => {
         const friends_arr = await fetchMyFriendsFromDB();
