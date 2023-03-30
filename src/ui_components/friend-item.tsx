@@ -1,5 +1,3 @@
-import { RealtimeChannel } from "@supabase/supabase-js";
-import { debug } from "console";
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "~store";
 
@@ -47,11 +45,15 @@ export const Friend = (props) => {
     }
     // subscribes to activity channel of this friend
     const subscribe = async () => {
-        const act_ch = supabase.channel(`activity_ch_` + props.uuid);
+        const act_ch = supabase.channel(`activity_ch:` + props.uuid);
         act_ch.subscribe(async (status) => {
-            if (status === 'SUBSCRIBED')
+            if (status === 'SUBSCRIBED') {
                 console.log('congratulations you moron, you are subscribing to ', props.nickname, 'activity!');
-            else
+                act_ch
+                    .on('broadcast', { event: 'siema' }, function (message) {
+                        return console.log(message.payload.message);
+                    });
+            } else
                 console.log("oops ", status);
         });
     }
@@ -75,6 +77,7 @@ export const Friend = (props) => {
         console.log(`creating event handler for ${props.uuid}`);
         console.log(props.realtimeChannel);
 
+        setFriendStatus(calculateStatus); // on startup
         props.realtimeChannel.on(
             'postgres_changes',
             {
@@ -90,11 +93,11 @@ export const Friend = (props) => {
             });
     }, []);
 
-    // subscribe to this friend activity, if he is online and was previously offline
+    // subscribe to this friend activity, if he is online and was previously offline.
     // effect should run initially and rerun on status change
     useEffect(() => {
          
-        console.log('!!!!second use effect in item!!!!');
+        console.log('{{second useffect}}');
         if (friendStatus === 'online') {
             subscribe().then(() => {
                 console.log('sub activity');
