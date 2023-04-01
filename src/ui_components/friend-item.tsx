@@ -22,12 +22,11 @@ export const Friend = (props) => {
     function startWatchdogTimer() {
         clearInterval(watchdog_timer.current);
         watchdog_timer.current = setInterval(() => {
-            console.log('timer started afresh yo');
             setLastSeen(lastSeen);// rerender
             const calculated_status = calculateStatus(); 
             if (calculated_status === "offline" && friendStatus !== "offline") {
                 setFriendStatus('offline');
-                console.log(props.nickname, "went", calculated_status);
+                console.log(props.nickname, "is", calculated_status);
             }
         }, watchdog_timer_dur);
     }

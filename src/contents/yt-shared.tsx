@@ -11,7 +11,6 @@ export const config: PlasmoCSConfig = {
   all_frames: true,
   run_at: "document_end"
 };
-
 let MY_ACTIVITY_CH: RealtimeChannel = null;
 
 interface Activity {
@@ -22,7 +21,7 @@ interface Activity {
   video_duration?: number;
   video_timestamp?: number;
 }
-
+window.history
 async function broadcastActivity(update: Activity) {
   MY_ACTIVITY_CH &&
     MY_ACTIVITY_CH.send({
@@ -61,29 +60,37 @@ async function launchActivityCh() {
   });
 }
 
-async function initiateHeartbeat() {
-  sendHeartbeat();
-  setInterval(sendHeartbeat, 15000);
-}
-
 async function sendMsg() {
 
 }
 // IIFE
 (async function init() {
 
-  // let my_uid = (await supabase.auth.getSession()).data.session.user.id;
-  // let the server know we are online:
-  // 1. start updating our own online status every 15sec on the database table
-  // 2. friend-list component will start listening for changes on the table for our friends
+  async function initiateHeartbeat() {
+    sendHeartbeat();
+    setInterval(sendHeartbeat, 15000);
+  }
+
   if (isLoggedIn()) {
     initiateHeartbeat();
     launchActivityCh();
   }
 
+  chrome.runtime.sendMessage({ action: "listen_to_tab_updates" }, function (response) {
+    console.log('Current URL: ' + response.url);
+    console.log('Current Tab Title: ' + response.title);
+  });
+
+  function handleUpdated(tabId, changeInfo, tabInfo) {
+    console.log("Tab updated");
+  }
+
+// console.log(chrome.webNavigation.onHistoryStateUpdated.hasListeners());
+  // chrome.tabs.onUpdated.addListener(handleUpdated, filter);
+  // chrome.tabs.onUpdated.addListener((tabid, changeInfo, tabInfo) => {
+// console.log("tab:", chrome.tabs.getCurrent());
 
 
-  // const { data, error } = await supabase.auth.signUp({
   //   email: 'mariusz@wirtualnapolska.pl',
   //   password: 'kutas123',
   // });
