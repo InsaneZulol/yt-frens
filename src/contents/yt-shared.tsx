@@ -20,9 +20,20 @@ interface Activity {
   video_name?: string;
   video_duration?: number;
   video_timestamp?: number;
+  muted?: boolean;
 }
-window.history
+
 async function broadcastActivity(update: Activity) {
+  console.log('act up:: ', { payload: {
+        event_timestamp: update.event_timestamp,
+        is_playing: update.is_playing,
+        video: update.video,
+        video_name: update.video_name,
+        video_timestamp: update.video_timestamp,
+        video_duration: update.video_duration,
+        muted: update.muted
+      },
+    });
   MY_ACTIVITY_CH &&
     MY_ACTIVITY_CH.send({
       type: 'broadcast',
@@ -33,36 +44,43 @@ async function broadcastActivity(update: Activity) {
         video: update.video,
         video_name: update.video_name,
         video_timestamp: update.video_timestamp,
-        video_duration: update.video_duration
+        video_duration: update.video_duration,
+        muted: update.muted
       },
     }).then(() => {
       console.log('sent activity update');
     });
 }
 
-
 async function launchActivityCh() {
+  // sends a message to background script so this content script starts receiving tab updates
+  chrome.runtime.sendMessage({ action: "listen_to_tab_updates" });
+  function listenToBGWorker() {
+    chrome.runtime.onMessage.addListener((message) => {
+      const activity_update: Activity = {
+        event_timestamp: Date.now(),
+        video: message.url,
+        video_name: message.title,
+        muted: message.mutedInfo?.muted,
+      };
+      if (Object.values(activity_update).some((value) => value !== undefined)) {
+        broadcastActivity(activity_update);
+      }
+    });
+  }
+
   MY_ACTIVITY_CH = supabase.channel(`activity_ch:` + (await supabase.auth.getSession()).data.session.user.id);
-  MY_ACTIVITY_CH.subscribe(async (status) => {
-    if (status === 'SUBSCRIBED') {
-      console.log('wooow we created our activity channel wowowowo');
-      setTimeout(async function () {
-
-        console.log('sending msg, ch');
-        MY_ACTIVITY_CH.send({
-          type: 'broadcast',
-          event: 'siema',
-          payload: { message: "no siema kurwa" },
-        });
-      }, 12000);
-      // 
-    };
-  });
+  if (MY_ACTIVITY_CH) {
+    MY_ACTIVITY_CH.subscribe(async (status) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('wooow we created our activity channel wowowowo');
+        listenToBGWorker();
+        // now listen to video time updates from DOM
+      };
+    });
+  }
 }
 
-async function sendMsg() {
-
-}
 // IIFE
 (async function init() {
 
@@ -75,21 +93,6 @@ async function sendMsg() {
     initiateHeartbeat();
     launchActivityCh();
   }
-
-  chrome.runtime.sendMessage({ action: "listen_to_tab_updates" }, function (response) {
-    console.log('Current URL: ' + response.url);
-    console.log('Current Tab Title: ' + response.title);
-  });
-
-  function handleUpdated(tabId, changeInfo, tabInfo) {
-    console.log("Tab updated");
-  }
-
-// console.log(chrome.webNavigation.onHistoryStateUpdated.hasListeners());
-  // chrome.tabs.onUpdated.addListener(handleUpdated, filter);
-  // chrome.tabs.onUpdated.addListener((tabid, changeInfo, tabInfo) => {
-// console.log("tab:", chrome.tabs.getCurrent());
-
 
   //   email: 'mariusz@wirtualnapolska.pl',
   //   password: 'kutas123',

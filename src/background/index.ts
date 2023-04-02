@@ -4,37 +4,35 @@ const trimTitle = (title: string): string => {
     }
 }
 
-const trimUrl = (url: string): string => {
-    if (url) {
-        let start_index = url.indexOf("?v=") + 3; // add 3 to exclude the "?v=" part
-        let end_index = url.indexOf("&list");
-        return url.substring(start_index, end_index);
+function trimUrl(url: string): string | null {
+    const videoIdParam = '?v=';
+    const index = url.indexOf(videoIdParam);
+    if (index !== -1) {
+        const videoId = url.slice(index + videoIdParam.length);
+        const nextParamIndex = videoId.indexOf('&');
+        return nextParamIndex === -1 ? videoId : videoId.slice(0, nextParamIndex);
     }
+    return null;
 }
 // listen to updates of the tab from which the message was sent
 // and relay the messages back to the tab
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
     if (request.action == "listen_to_tab_updates") {
-        chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+        chrome.tabs.onUpdated.addListener((tabId, { url, title, mutedInfo }, tab) => {
             if (tabId === sender.tab.id) {
                 const updatedData = <chrome.tabs.TabChangeInfo>{};
-                if (changeInfo.url) {
-                    updatedData.url = trimUrl(changeInfo.url);
-                }
-                if (changeInfo.title) {
-                    updatedData.title = trimTitle(changeInfo.title);
-                }
-                if (changeInfo.mutedInfo && changeInfo.mutedInfo.muted) {
-                    updatedData.mutedInfo.muted = changeInfo.mutedInfo.muted;
-                }
+                if (url) updatedData.url = trimUrl(url);
+                if (title) updatedData.title = trimTitle(title);
+                if (mutedInfo && mutedInfo.muted !== undefined) updatedData.mutedInfo = { muted: mutedInfo.muted };
+
                 if (Object.keys(updatedData).length > 0) {
-                    console.log("tab update message:", updatedData);
-                    sendResponse(updatedData);
+                    console.log("sending tab update message to cs:", updatedData);
+                    chrome.tabs.sendMessage(sender.tab.id, updatedData);
+                    chrome.runtime.lastError && console.log("kurwa fail! ! ! ! ! 11");
                 }
             }
         });
     }
-    return true;
 });
 
 // listen for get_tab_info on startup and relay the tab data back

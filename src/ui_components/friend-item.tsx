@@ -16,19 +16,19 @@ export const Friend = (props) => {
     const [friendStatus, setFriendStatus] = useState<FriendStatus>('unknown');
     // const [friendActivity, setFriendActivity] = useState<string>('no_connection');
     // const [activityCh, setActivityCh] = useState<RealtimeChannel>(act_ch)
-    let watchdog_timer = useRef<NodeJS.Timer>(null);
-    const watchdog_timer_dur = 16000;
+    let rerender_timer = useRef<NodeJS.Timer>(null);
+    const rerender_timer_dur = 16000;
 
     function startWatchdogTimer() {
-        clearInterval(watchdog_timer.current);
-        watchdog_timer.current = setInterval(() => {
+        clearInterval(rerender_timer.current);
+        rerender_timer.current = setInterval(() => {
             setLastSeen(lastSeen);// rerender
             const calculated_status = calculateStatus(); 
             if (calculated_status === "offline" && friendStatus !== "offline") {
                 setFriendStatus('offline');
                 console.log(props.nickname, "is", calculated_status);
             }
-        }, watchdog_timer_dur);
+        }, rerender_timer_dur);
     }
 
     // calculate friend status based on last_seen time
@@ -66,7 +66,7 @@ export const Friend = (props) => {
         
         setFriendStatus(calculateStatus);
         startWatchdogTimer();
-        return () => clearInterval(watchdog_timer.current);
+        return () => clearInterval(rerender_timer.current);
     }, [lastSeen])
 
     // create an event handler to listen to this friend's status changes in db
