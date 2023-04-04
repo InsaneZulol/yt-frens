@@ -16,7 +16,6 @@ function trimUrl(url: string): string | null {
     }
     return null;
 }
-chrome.runtime.onStartup.addListener(() => console.log("ON STARTUP EVENT 🚀"));
 // listen to updates of the tab from which the message was sent
 // and relay the messages back to the tab
 // TODO: ten listener nie znika, trzeba wyjebać, może na starcie wszystkie
@@ -47,20 +46,20 @@ chrome.runtime.onMessage.addListener(async function (request, sender) {
 });
 
 // listen for get_tab_info on startup and relay the tab data back
-chrome.runtime.onMessage.addListener(async function (
-    request,
-    sender,
-    sendResponse
-) {
-    if (request.action == "get_tab_info") {
-        sendResponse({
-            url: trimUrl(sender.tab.url),
-            title: trimTitle(sender.tab.title),
-            muted: sender.tab.mutedInfo.muted
-        });
-    }
-    return true;
-});
+// chrome.runtime.onMessage.addListener(async function (
+//     request,
+//     sender,
+//     sendResponse
+// ) {
+//     if (request.action == "get_tab_info") {
+//         sendResponse({
+//             url: trimUrl(sender.tab.url),
+//             title: trimTitle(sender.tab.title),
+//             muted: sender.tab.mutedInfo.muted
+//         });
+//     }
+//     return true;
+// });
 
 console.log("new bg script");
 export {};

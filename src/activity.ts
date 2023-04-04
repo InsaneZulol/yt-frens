@@ -28,8 +28,7 @@ export function UPDATE_ACTIVITY_STATE(new_activity: ActivityI): void {
     onActivityStateUpdate();
 }
 
-async function onActivityStateUpdate() {
-    console.log("act upd:: ", ACTIVITY_STATE);
+async function broadcastActivity() {
     ACTIVITY_CH &&
         ACTIVITY_CH.send({
             type: "broadcast",
@@ -38,6 +37,10 @@ async function onActivityStateUpdate() {
         }).then(() => {
             console.log("sent activity update");
         });
+}
+
+async function onActivityStateUpdate() {
+    broadcastActivity();
 }
 
 export async function launchActivityCh() {
@@ -55,6 +58,11 @@ export async function launchActivityCh() {
         });
     }
 
+    async function listenForRequests() {
+        console.log("nice, a request!");
+        ACTIVITY_CH.on("broadcast", { event: "activity_req" }, broadcastActivity);
+    }
+
     SET_ACTIVITY_CH().then(() => {
         if (ACTIVITY_CH) {
             ACTIVITY_CH.subscribe(async (status) => {
@@ -62,6 +70,7 @@ export async function launchActivityCh() {
                     console.log("wooow we created act channelwo");
                     listenToTab();
                     // now listen to video time updates from DOM
+                    listenForRequests();
                 }
             });
         }

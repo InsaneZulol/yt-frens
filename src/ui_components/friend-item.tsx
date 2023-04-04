@@ -11,6 +11,7 @@ export const Friend = (props) => {
     const [lastSeen, setLastSeen] = useState<Date>(new Date(props.lastSeen));
     const [status, setStatus] = useState<FriendStatus>("unknown");
     const [activity, setActivity] = useState<ActivityI>({});
+    const act_ch = useRef(supabase.channel(`activity_ch:` + props.uuid));
     let rerender_timer = useRef<NodeJS.Timer>(null);
     const rerender_timer_dur = 16000;
 
@@ -45,29 +46,29 @@ export const Friend = (props) => {
     };
     // subscribes to activity channel of this friend
     const subscribe = async () => {
-        const act_ch = supabase.channel(`activity_ch:` + props.uuid);
-        act_ch.subscribe(async (status) => {
+        const fullActivityPls = async () => {
+            act_ch.current.send({ type: "broadcast", event: "activity_req" });
+        };
+        // create event handler for activity events
+        const addActivityHandler = async () => {
+            act_ch.current.on("broadcast", { event: "activity" }, function (message) {
+                onActivity(message.payload);
+            });
+        };
+        act_ch.current.subscribe(async (status) => {
             if (status === "SUBSCRIBED") {
                 console.log(
-                    "congratulations you moron, you are subscribing to ",
+                    "congratulations you moron, you are subscribing to",
                     props.nickname,
                     "activity!"
                 );
-                // create event handler for activity events
-                act_ch.on(
-                    "broadcast",
-                    { event: "activity" },
-                    function (message) {
-                        onActivity(message.payload);
-                    }
-                );
-                //
+                addActivityHandler().then(() => fullActivityPls());
             } else console.log("oops ", status);
         });
     };
 
     // adds handler for postgres_changes realtime channel
-    const addHandler = async () => {
+    const addPostgresHandler = async () => {
         props.realtimeChannel.on(
             "postgres_changes",
             {
@@ -95,10 +96,7 @@ export const Friend = (props) => {
     // if timer runs out, set user status to offline
     // should run on start and rerun every time last seen gets changed
     useEffect(() => {
-        console.log(
-            "useEffect executed. Either [lastSeen changed], or first render."
-        );
-
+        console.log("lastSeen changed, or first render.");
         setStatus(calculateStatus);
         startRerenderTimer();
         return () => clearInterval(rerender_timer.current);
@@ -109,7 +107,7 @@ export const Friend = (props) => {
     // effect should only run on initial render
     useEffect(() => {
         console.log(`creating event handler for ${props.uuid}`);
-        addHandler();
+        addPostgresHandler();
         setStatus(calculateStatus); // on startup
     }, []);
 
@@ -118,9 +116,7 @@ export const Friend = (props) => {
     useEffect(() => {
         console.log("{{}} <- cipka");
         if (status === "online") {
-            subscribe().then(() => {
-                console.log("sub activity");
-            });
+            subscribe();
         }
     }, [status]);
 
@@ -132,14 +128,18 @@ export const Friend = (props) => {
                 color: "white",
                 fontSize: 10,
                 borderRadius: "20px",
-                height: 50,
+                height: 100,
                 width: 120,
                 marginTop: 8
             }}
             className="friend_item">
-            {props.nickname}; Last seen{" "}
-            {new Date().getTime() - lastSeen.getTime() / 1000} sec. ago.
-            <br></br>
+            {props.nickname};{" "}
+            <div>
+                Last seen {(new Date().getTime() - lastSeen.getTime()) / 1000} sec. ago.
+            </div>
+            <div>VideoURL: {activity.video}</div>
+            <div>Title: {activity.video_name}</div>
+            <div>Playing: {activity.is_playing}</div>
             {calculateStatus()}
         </div>
     );
