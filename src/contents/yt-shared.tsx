@@ -12,7 +12,6 @@ export const config: PlasmoCSConfig = {
     all_frames: true,
     run_at: "document_end"
 };
-
 // IIFE
 (async function init() {
     async function initiateHeartbeat() {

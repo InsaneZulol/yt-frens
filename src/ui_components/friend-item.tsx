@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "~store";
 import type { ActivityI } from "~/activity";
+import { time } from "console";
 
 export const useFriendActivity = () => {
     const [status, setStatus] = useState<FriendStatus>("unknown");
@@ -78,12 +79,7 @@ export const Friend = (props) => {
                 filter: `user_id=eq.${props.uuid}`
             },
             (payload) => {
-                console.log(
-                    "[table  update]",
-                    props.nickname,
-                    "is now",
-                    calculateStatus()
-                );
+                console.log("[table  update]");
                 setLastSeen(new Date(payload.new.last_seen));
                 // restart timer.
                 startRerenderTimer();
@@ -114,7 +110,7 @@ export const Friend = (props) => {
     // subscribe to this friend activity, if he is online and was previously offline.
     // effect should run initially and rerun on status change
     useEffect(() => {
-        console.log("{{}} <- cipka");
+        console.log(`${props.nickname} status changed to ${status}`);
         if (status === "online") {
             subscribe();
         }

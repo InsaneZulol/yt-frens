@@ -44,19 +44,13 @@ async function onActivityStateUpdate() {
 }
 
 export async function launchActivityCh() {
-    // sends a message to background script to start receiving tab updates
-    function listenToTab() {
-        chrome.runtime.sendMessage({
-            action: "listen_to_tab_updates"
+    chrome.runtime.onMessage.addListener((message) => {
+        UPDATE_ACTIVITY_STATE({
+            video: message.url ?? ACTIVITY_STATE.video,
+            video_name: message.title ?? ACTIVITY_STATE.video_name,
+            tab_muted: message.tab_muted ?? ACTIVITY_STATE.tab_muted
         });
-        chrome.runtime.onMessage.addListener((message) => {
-            UPDATE_ACTIVITY_STATE({
-                video: message.url ?? ACTIVITY_STATE.video,
-                video_name: message.title ?? ACTIVITY_STATE.video_name,
-                tab_muted: message.tab_muted ?? ACTIVITY_STATE.tab_muted
-            });
-        });
-    }
+    });
 
     async function listenForRequests() {
         console.log("nice, a request!");
@@ -68,7 +62,6 @@ export async function launchActivityCh() {
             ACTIVITY_CH.subscribe(async (status) => {
                 if (status === "SUBSCRIBED") {
                     console.log("wooow we created act channelwo");
-                    listenToTab();
                     // now listen to video time updates from DOM
                     listenForRequests();
                 }
