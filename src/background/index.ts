@@ -27,7 +27,7 @@ chrome.tabs.onUpdated.addListener((tabId, { url, title, mutedInfo }, tab) => {
         if (Object.keys(updatedData).length > 0) {
             console.log("sending tab update message to cs", updatedData);
             chrome.tabs.sendMessage(tabId, updatedData);
-            chrome.runtime.lastError && console.log("kurwa fail! ! ! ! ! 11");
+            chrome.runtime.lastError && console.log("kurwa fail!11");
         }
     }
 });

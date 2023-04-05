@@ -42,6 +42,9 @@ const FriendList = () => {
     return (
         <div
             style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
                 background: "red",
                 padding: 12,
                 color: "white",
@@ -53,7 +56,7 @@ const FriendList = () => {
             }}
             className="friend_list">
             Friends
-            <ul>{listItems}</ul>
+            <div>{listItems}</div>
         </div>
     );
 };

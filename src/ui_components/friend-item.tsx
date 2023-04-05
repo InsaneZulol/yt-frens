@@ -123,20 +123,20 @@ export const Friend = (props) => {
                 padding: 3,
                 color: "white",
                 fontSize: 10,
-                borderRadius: "20px",
+                borderRadius: "10px",
                 height: 100,
-                width: 120,
+                width: 180,
                 marginTop: 8
             }}
             className="friend_item">
-            {props.nickname};{" "}
+            {props.nickname}
             <div>
                 Last seen {(new Date().getTime() - lastSeen.getTime()) / 1000} sec. ago.
             </div>
             <div>VideoURL: {activity.video}</div>
             <div>Title: {activity.video_name}</div>
             <div>Playing: {activity.is_playing}</div>
-            {calculateStatus()}
+            <div>{status}</div>
         </div>
     );
 };
