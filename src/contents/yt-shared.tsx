@@ -2,11 +2,10 @@
 
 import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
 import { launchActivityCh } from "~/activity";
-import LoginModal from "~/ui_components/login-modal";
 import { isLoggedIn, logout, useSession } from "~auth";
 import { sendHeartbeat } from "~db";
-import { supabase } from "~store";
 import FriendList from "~ui_components/friend-list";
+import LoginModal from "~ui_components/login-modal";
 
 export const config: PlasmoCSConfig = {
     matches: ["https://www.youtube.com/*", "http://www.youtube.com/*"],
@@ -20,6 +19,10 @@ export const config: PlasmoCSConfig = {
         setInterval(sendHeartbeat, 15000);
     }
 
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        console.log("AAAA message from DOM!", request);
+    });
+
     if (isLoggedIn()) {
         initiateHeartbeat();
         launchActivityCh();
@@ -30,32 +33,49 @@ export const config: PlasmoCSConfig = {
     // });
 })();
 
+// export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
+//     document.querySelector("#guide-inner-content #sections :not(:first-child) #items ");
+// export const RenderUI = () => {
+//     console.log(">> gdzie jest panel?");
+//     const sessionStatus = useSession();
+
+//     if (sessionStatus === "loading") {
+//         return <>Loading...</>;
+//     }
+
+//     if (sessionStatus === "unauthenticated") {
+//         return (
+//             <>
+//                 <LoginModal />
+//             </>
+//         );
+//     }
+
+//     return (
+//         <div style={{ display: "flex", flexDirection: "column" }}>
+//             <div>
+//                 <FriendList></FriendList>
+//             </div>
+//             <button onClick={() => logout()}>Wyloguj</button>
+//         </div>
+//     );
+// };
+
+// export default RenderUI;
+
 export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
-    document.querySelector("#guide-inner-content #sections :not(:first-child) #items ");
-export const RenderUI = () => {
-    console.log(">> gdzie jest panel?");
-    const sessionStatus = useSession();
+    document.querySelector("video");
 
-    if (sessionStatus === "loading") {
-        return <>Loading...</>;
-    }
-
-    if (sessionStatus === "unauthenticated") {
-        return (
-            <>
-                <LoginModal />
-            </>
-        );
-    }
-
-    return (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-            <div>
-                <FriendList></FriendList>
-            </div>
-            <button onClick={() => logout()}>Wyloguj</button>
-        </div>
-    );
+export const RenderBS = () => {
+    console.log("??????");
+    const vid = document.querySelector("video");
+    vid.addEventListener("pause", (event) => {
+        console.log("FROM PLASMO: PAUSE ⏸️");
+    });
+    setTimeout(() => {
+        chrome.runtime.sendMessage("siema kurwa");
+        vid.pause();
+    }, 4000);
+    return <button>huuuj xd</button>;
 };
-
-export default RenderUI;
+export default RenderBS;
