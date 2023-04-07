@@ -1,12 +1,42 @@
-// import type { PlasmoCSConfig } from "plasmo"
 // import { supabase } from "~store";
+import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
+import { UPDATE_ACTIVITY_STATE, type ActivityI } from "~activity";
 
-// export const config: PlasmoCSConfig = {
-//   matches: ["https://www.youtube.com/watch?v=*", "http://www.youtube.com/watch?v=*"],
-//   all_frames: true,
-//   css: ["./yt-style.css"],
-//   run_at: "document_idle" // todo: zweryfikować, chyba nie potrzeba idle
-// }
+export const config: PlasmoCSConfig = {
+    matches: ["https://www.youtube.com/*", "http://www.youtube.com/*"], // nie videopage, bo SPA. Ładujemy odrazu i mutation observer czeka na elem 'video'.
+    all_frames: true,
+    css: ["./yt-style.css"],
+    run_at: "document_idle"
+};
+
+export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
+    document.querySelector("video");
+
+export const VideoListeners = () => {
+    const video = document.querySelector("video");
+    video.addEventListener("pause", (event) => {
+        console.debug("PAUSE ⏸️");
+        UPDATE_ACTIVITY_STATE({ is_playing: false, video_timestamp: video.currentTime });
+    });
+    video.addEventListener("play", (event) => {
+        console.debug("PLAY ▶️");
+        UPDATE_ACTIVITY_STATE({ is_playing: true, video_timestamp: video.currentTime });
+    });
+    // todo: youtube by default pauses when you start
+    // seeking. This causes unnecesary paused/played
+    // events. Figure it out.
+    video.addEventListener("seeked", (event) => {
+        console.debug("video seeked ⌚");
+        UPDATE_ACTIVITY_STATE({ video_timestamp: video.currentTime });
+    });
+    // video.addEventListener("volumechange", (event) => {
+    //     if(video.muted)
+    //     UPDATE_ACTIVITY_STATE({ video_muted: true });
+    //     console.log("vol change");
+    // });
+    return <button>huuuj xd</button>;
+};
+export default VideoListeners;
 
 // // Przykład użycia pokojów w demo supabase realtime demo https://github.com/supabase/realtime/blob/main/demo/pages/%5B...slug%5D.tsx
 

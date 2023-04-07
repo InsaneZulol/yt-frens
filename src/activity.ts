@@ -4,20 +4,22 @@ import { supabase } from "~store";
 export interface ActivityI {
     // event_timestamp: number;
     is_playing?: boolean;
-    video?: string;
+    video_url?: string;
     video_name?: string;
     video_duration?: number;
     video_timestamp?: number;
     tab_muted?: boolean;
+    video_muted?: boolean;
 }
 
 let ACTIVITY_STATE: ActivityI = {
     is_playing: null,
-    video: null,
+    video_url: null,
     video_name: null,
     video_duration: null,
     video_timestamp: null,
-    tab_muted: null
+    tab_muted: null,
+    video_muted: null
 };
 
 export function UPDATE_ACTIVITY_STATE(new_activity: ActivityI): void {
@@ -25,6 +27,7 @@ export function UPDATE_ACTIVITY_STATE(new_activity: ActivityI): void {
         ...ACTIVITY_STATE,
         ...new_activity
     };
+    console.log("new act::", new_activity);
     onActivityStateUpdate();
 }
 
@@ -44,11 +47,12 @@ async function onActivityStateUpdate() {
 }
 
 export async function launchActivityCh() {
+    // listen to tab updates from service worker
     chrome.runtime.onMessage.addListener((message) => {
         UPDATE_ACTIVITY_STATE({
-            video: message.url ?? ACTIVITY_STATE.video,
-            video_name: message.title ?? ACTIVITY_STATE.video_name,
-            tab_muted: message.tab_muted ?? ACTIVITY_STATE.tab_muted
+            video_url: message?.tab_update?.url ?? ACTIVITY_STATE.video_url,
+            video_name: message?.tab_update?.title ?? ACTIVITY_STATE.video_name
+            // tab_muted: message.tab_muted ?? ACTIVITY_STATE.tab_muted
         });
     });
 

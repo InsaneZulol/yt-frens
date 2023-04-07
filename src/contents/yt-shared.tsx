@@ -33,49 +33,32 @@ export const config: PlasmoCSConfig = {
     // });
 })();
 
-// export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
-//     document.querySelector("#guide-inner-content #sections :not(:first-child) #items ");
-// export const RenderUI = () => {
-//     console.log(">> gdzie jest panel?");
-//     const sessionStatus = useSession();
-
-//     if (sessionStatus === "loading") {
-//         return <>Loading...</>;
-//     }
-
-//     if (sessionStatus === "unauthenticated") {
-//         return (
-//             <>
-//                 <LoginModal />
-//             </>
-//         );
-//     }
-
-//     return (
-//         <div style={{ display: "flex", flexDirection: "column" }}>
-//             <div>
-//                 <FriendList></FriendList>
-//             </div>
-//             <button onClick={() => logout()}>Wyloguj</button>
-//         </div>
-//     );
-// };
-
-// export default RenderUI;
-
 export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
-    document.querySelector("video");
+    document.querySelector("#guide-inner-content #sections :not(:first-child) #items ");
+export const RenderUI = () => {
+    console.log(">> gdzie jest panel?");
+    const sessionStatus = useSession();
 
-export const RenderBS = () => {
-    console.log("??????");
-    const vid = document.querySelector("video");
-    vid.addEventListener("pause", (event) => {
-        console.log("FROM PLASMO: PAUSE ⏸️");
-    });
-    setTimeout(() => {
-        chrome.runtime.sendMessage("siema kurwa");
-        vid.pause();
-    }, 4000);
-    return <button>huuuj xd</button>;
+    if (sessionStatus === "loading") {
+        return <>Loading...</>;
+    }
+
+    if (sessionStatus === "unauthenticated") {
+        return (
+            <>
+                <LoginModal />
+            </>
+        );
+    }
+
+    return (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+            <div>
+                <FriendList></FriendList>
+            </div>
+            <button onClick={() => logout()}>Wyloguj</button>
+        </div>
+    );
 };
-export default RenderBS;
+
+export default RenderUI;

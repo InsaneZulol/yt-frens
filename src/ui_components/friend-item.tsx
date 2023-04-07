@@ -124,7 +124,7 @@ export const Friend = (props) => {
                 color: "white",
                 fontSize: 10,
                 borderRadius: "10px",
-                height: 100,
+                height: 120,
                 width: 180,
                 marginTop: 8
             }}
@@ -133,9 +133,10 @@ export const Friend = (props) => {
             <div>
                 Last seen {(new Date().getTime() - lastSeen.getTime()) / 1000} sec. ago.
             </div>
-            <div>VideoURL: {activity.video}</div>
+            <div>VideoURL: {activity.video_url}</div>
             <div>Title: {activity.video_name}</div>
-            <div>Playing: {activity.is_playing}</div>
+            <div>Playing: {activity.is_playing ? "Yes" : "No"}</div>
+            <div>At: {activity.video_timestamp}</div>
             <div>{status}</div>
         </div>
     );
