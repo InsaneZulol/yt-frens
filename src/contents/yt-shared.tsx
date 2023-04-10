@@ -18,11 +18,6 @@ export const config: PlasmoCSConfig = {
         sendHeartbeat();
         setInterval(sendHeartbeat, 15000);
     }
-
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-        console.log("AAAA message from DOM!", request);
-    });
-
     if (isLoggedIn()) {
         initiateHeartbeat();
         launchActivityCh();

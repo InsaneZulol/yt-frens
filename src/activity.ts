@@ -1,5 +1,5 @@
 import type { RealtimeChannel } from "@supabase/supabase-js";
-import { supabase } from "~store";
+import { MESSAGE_ACTIONS, supabase } from "~store";
 
 export interface ActivityI {
     // event_timestamp: number;
@@ -18,8 +18,8 @@ let ACTIVITY_STATE: ActivityI = {
     video_name: null,
     video_duration: null,
     video_timestamp: null,
-    tab_muted: null,
-    video_muted: null
+    video_muted: null,
+    tab_muted: null
 };
 
 export function UPDATE_ACTIVITY_STATE(new_activity: ActivityI): void {
@@ -27,7 +27,6 @@ export function UPDATE_ACTIVITY_STATE(new_activity: ActivityI): void {
         ...ACTIVITY_STATE,
         ...new_activity
     };
-    console.log("new act::", new_activity);
     onActivityStateUpdate();
 }
 
@@ -47,16 +46,20 @@ async function onActivityStateUpdate() {
 }
 
 export async function launchActivityCh() {
-    // listen to tab updates from service worker
-    chrome.runtime.onMessage.addListener((message) => {
-        UPDATE_ACTIVITY_STATE({
-            video_url: message?.tab_update?.url ?? ACTIVITY_STATE.video_url,
-            video_name: message?.tab_update?.title ?? ACTIVITY_STATE.video_name
-            // tab_muted: message.tab_muted ?? ACTIVITY_STATE.tab_muted
+    // listen to tab updates messages from the service worker
+    function listenToTabUpdates() {
+        chrome.runtime.onMessage.addListener((message) => {
+            if (message.action == MESSAGE_ACTIONS.ATTACH)
+                UPDATE_ACTIVITY_STATE({
+                    video_url: message?.tab_update?.url ?? ACTIVITY_STATE.video_url,
+                    video_name: message?.tab_update?.title ?? ACTIVITY_STATE.video_name
+                    // tab_muted: message.tab_muted ?? ACTIVITY_STATE.tab_muted
+                });
         });
-    });
+    }
 
-    async function listenForRequests() {
+    // listen to our activity requests coming from the web
+    function listenForRequests() {
         console.log("nice, a request!");
         ACTIVITY_CH.on("broadcast", { event: "activity_req" }, broadcastActivity);
     }
@@ -65,8 +68,8 @@ export async function launchActivityCh() {
         if (ACTIVITY_CH) {
             ACTIVITY_CH.subscribe(async (status) => {
                 if (status === "SUBSCRIBED") {
-                    console.log("wooow we created act channelwo");
-                    // now listen to video time updates from DOM
+                    console.log("wooow we created act channel");
+                    listenToTabUpdates();
                     listenForRequests();
                 }
             });

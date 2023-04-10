@@ -1,11 +1,13 @@
 // import { supabase } from "~store";
 import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
-import { UPDATE_ACTIVITY_STATE, type ActivityI } from "~activity";
+import { useEffect, useState } from "react";
+import { UPDATE_ACTIVITY_STATE } from "~activity";
+import { MESSAGE_ACTIONS } from "~store";
 
 export const config: PlasmoCSConfig = {
     matches: ["https://www.youtube.com/*", "http://www.youtube.com/*"], // nie videopage, bo SPA. Ładujemy odrazu i mutation observer czeka na elem 'video'.
     all_frames: true,
-    css: ["./yt-style.css"],
+    // css: ["./yt-style.css"], // jak to odkomentujesz, to przestanie działac dynamic cs injection
     run_at: "document_idle"
 };
 
@@ -13,6 +15,20 @@ export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
     document.querySelector("video");
 
 export const VideoListeners = () => {
+    const [attachedTo, setAttachedTo] = useState<string>("self");
+
+    useEffect(() => {
+        chrome.runtime.onMessage.addListener((message) => {
+            if (message.action == MESSAGE_ACTIONS.ATTACH) {
+                if (message.params.user_id) {
+                    console.log("🔗 attaching to", message.params.user_id);
+                    setAttachedTo(message.params.user_id);
+                }
+            }
+        });
+    }, []);
+
+    console.log("?????????????");
     const video = document.querySelector("video");
     video.addEventListener("pause", (event) => {
         console.debug("PAUSE ⏸️");

@@ -1,4 +1,5 @@
 import type { ActivityI } from "~activity";
+import { MESSAGE_ACTIONS, type CHROME_API_MESSAGE, type TAB_UPDATE } from "~store";
 
 const trimTitle = (title: string): string => {
     if (title) {
@@ -23,11 +24,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         if (changeInfo.title && changeInfo.title.includes("YouTube")) {
             console.log("new video!");
             chrome.tabs.sendMessage(tabId, {
-                tab_update: {
+                action: MESSAGE_ACTIONS.TAB_UPDATE,
+                params: {
                     url: tab.url,
                     title: trimTitle(tab.title)
-                }
-            });
+                } as TAB_UPDATE
+            } as CHROME_API_MESSAGE);
         }
     }
     // update_tab_stat
