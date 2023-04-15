@@ -1,7 +1,7 @@
 import type { ActivityI } from "~activity";
 import {
     MESSAGE_ACTIONS,
-    type CHROME_API_MESSAGE,
+    type API_MESSAGING_EVENTS,
     type TAB_UPDATE
 } from "~types/messages";
 
@@ -22,19 +22,17 @@ function trimUrl(url: string): string | null {
     return null;
 }
 //
-
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     const YouTube: boolean = tab.url && tab.url.includes("youtube.com");
     if (YouTube) {
         if (changeInfo.title && changeInfo.title.includes("YouTube")) {
-            console.log("new video!");
             chrome.tabs.sendMessage(tabId, {
                 action: MESSAGE_ACTIONS.TAB_UPDATE,
                 params: {
                     url: tab.url,
                     title: trimTitle(tab.title)
                 } as TAB_UPDATE
-            } as CHROME_API_MESSAGE);
+            } as API_MESSAGING_EVENTS);
         }
     }
     // update_tab_stat

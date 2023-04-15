@@ -12,7 +12,7 @@ export interface TARGET {
     user_id: string;
 }
 
-export interface CHROME_API_MESSAGE {
+export interface API_MESSAGING_EVENTS {
     action: MESSAGE_ACTIONS;
     params: TAB_UPDATE | TARGET;
 }

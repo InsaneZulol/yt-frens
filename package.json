@@ -2,7 +2,7 @@
     "name": "yt-frens",
     "displayName": "Yt frens",
     "version": "0.0.1",
-    "description": "youtube stuff",
+    "description": "youtube",
     "author": "Alan Kaluza, Karol Dzialowski",
     "scripts": {
         "dev": "plasmo dev",

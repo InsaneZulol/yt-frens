@@ -2,7 +2,7 @@
 import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
 import { useEffect, useState } from "react";
 import { UPDATE_ACTIVITY_STATE } from "~activity";
-import { MESSAGE_ACTIONS } from "~types/messages";
+import { MESSAGE_ACTIONS, type API_MESSAGING_EVENTS } from "~types/messages";
 
 export const config: PlasmoCSConfig = {
     matches: ["https://www.youtube.com/*", "http://www.youtube.com/*"], // nie videopage, bo SPA. Ładujemy odrazu i mutation observer czeka na elem 'video'.
@@ -23,7 +23,7 @@ export const Video = () => {
         // receive messages from this - same - content script through background script relay
         chrome.runtime.onMessage.addListener((message) => {
             if (message.action == MESSAGE_ACTIONS.ATTACH) {
-                if (message.params.user_id) {
+                if (message.params) {
                     console.log("🔗 attaching to", message.params.user_id);
                     setAttachedTo(message.params.user_id);
                 }
@@ -60,7 +60,7 @@ export const Video = () => {
         // });
     }, []);
 
-    return <button>huuuj xd</button>;
+    return <button>kuuurwa</button>;
 };
 export default Video;
 

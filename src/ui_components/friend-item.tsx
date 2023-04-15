@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "~store";
 import type { ActivityI } from "~/activity";
 import { time } from "console";
-import { MESSAGE_ACTIONS, type TARGET, type CHROME_API_MESSAGE } from "~types/messages";
+import { MESSAGE_ACTIONS, type TARGET, type API_MESSAGING_EVENTS } from "~types/messages";
 
 export const Friend = (props) => {
     console.log("💥rendering ", props.nickname, " component💥");
@@ -118,32 +118,35 @@ export const Friend = (props) => {
         chrome.runtime.sendMessage({
             action: MESSAGE_ACTIONS.ATTACH,
             params: { user_id } as TARGET
-        } as CHROME_API_MESSAGE);
+        } as API_MESSAGING_EVENTS);
     };
     return (
-        <div
-            onClick={() => attach(props.uuid)}
-            style={{
-                background: "black",
-                padding: 3,
-                color: "white",
-                fontSize: 10,
-                borderRadius: "10px",
-                height: 120,
-                width: 180,
-                marginTop: 8
-            }}
-            className="friend_item">
-            {props.nickname}
-            <div>
-                Last seen {(new Date().getTime() - lastSeen.getTime()) / 1000} sec. ago.
+        <a href={activity.video_url}>
+            <div
+                onClick={() => attach(props.uuid)}
+                style={{
+                    background: "black",
+                    padding: 3,
+                    color: "white",
+                    fontSize: 10,
+                    borderRadius: "10px",
+                    height: 120,
+                    width: 180,
+                    marginTop: 8
+                }}
+                className="friend_item">
+                {props.nickname}
+                <div>
+                    Last seen {(new Date().getTime() - lastSeen.getTime()) / 1000} sec.
+                    ago.
+                </div>
+                <div>VideoURL: {activity.video_url}</div>
+                <div>Title: {activity.video_name}</div>
+                <div>Playing: {activity.is_playing ? "Yes" : "No"}</div>
+                <div>At: {activity.video_timestamp}</div>
+                <div>{status}</div>
             </div>
-            <div>VideoURL: {activity.video_url}</div>
-            <div>Title: {activity.video_name}</div>
-            <div>Playing: {activity.is_playing ? "Yes" : "No"}</div>
-            <div>At: {activity.video_timestamp}</div>
-            <div>{status}</div>
-        </div>
+        </a>
     );
 };
 

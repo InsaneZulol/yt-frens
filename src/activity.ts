@@ -1,5 +1,5 @@
 import type { RealtimeChannel } from "@supabase/supabase-js";
-import { MESSAGE_ACTIONS } from "~types/messages";
+import { MESSAGE_ACTIONS, type TAB_UPDATE } from "~types/messages";
 import { supabase } from "~store";
 
 export interface ActivityI {
@@ -50,16 +50,17 @@ export async function launchActivityCh() {
     // listen to tab updates messages from the service worker
     function listenToTabUpdates() {
         chrome.runtime.onMessage.addListener((message) => {
-            if (message.action == MESSAGE_ACTIONS.ATTACH)
+            if (message.action && message.action === MESSAGE_ACTIONS.TAB_UPDATE)
                 UPDATE_ACTIVITY_STATE({
-                    video_url: message?.tab_update?.url ?? ACTIVITY_STATE.video_url,
-                    video_name: message?.tab_update?.title ?? ACTIVITY_STATE.video_name
+                    video_url: message?.params?.url ?? ACTIVITY_STATE.video_url,
+                    video_name: message?.params?.title ?? ACTIVITY_STATE.video_name
                     // tab_muted: message.tab_muted ?? ACTIVITY_STATE.tab_muted
                 });
         });
     }
 
-    // listen to our activity requests coming from the web
+    // add event handler for *our activity* requests coming from the web
+    // to broadcast the requested activity
     function listenForRequests() {
         console.log("nice, a request!");
         ACTIVITY_CH.on("broadcast", { event: "activity_req" }, broadcastActivity);
