@@ -1,5 +1,6 @@
 import type { RealtimeChannel } from "@supabase/supabase-js";
-import { MESSAGE_ACTIONS, supabase } from "~store";
+import { MESSAGE_ACTIONS } from "~types/messages";
+import { supabase } from "~store";
 
 export interface ActivityI {
     // event_timestamp: number;

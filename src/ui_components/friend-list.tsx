@@ -1,20 +1,13 @@
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { useState, useEffect, useCallback } from "react";
 import { fetchMyFriendsFromDB } from "~db";
-import { supabase, MESSAGE_ACTIONS, type CHROME_API_MESSAGE, type TARGET } from "~store";
+import { supabase } from "~store";
 import { Friend } from "./friend-item";
 
 const FriendList = () => {
     console.log("friend list rendered");
     const [friends, setFriends] = useState([]);
     const [postgresChangesCh, setPostgresChangesCh] = useState<RealtimeChannel>(null);
-
-    const attach = async (user_id: string) => {
-        chrome.runtime.sendMessage({
-            action: MESSAGE_ACTIONS.ATTACH,
-            params: { user_id } as TARGET
-        } as CHROME_API_MESSAGE);
-    };
 
     const fetchFriends = async () => {
         const friends_arr = await fetchMyFriendsFromDB();
@@ -39,7 +32,6 @@ const FriendList = () => {
 
     const listItems = friends.map((friend, index) => (
         <Friend
-            onClick={() => attach(friend.user_id)}
             key={friend.user_id}
             uuid={friend.user_id}
             nickname={friend.nickname}

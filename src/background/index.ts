@@ -1,5 +1,9 @@
 import type { ActivityI } from "~activity";
-import { MESSAGE_ACTIONS, type CHROME_API_MESSAGE, type TAB_UPDATE } from "~store";
+import {
+    MESSAGE_ACTIONS,
+    type CHROME_API_MESSAGE,
+    type TAB_UPDATE
+} from "~types/messages";
 
 const trimTitle = (title: string): string => {
     if (title) {
@@ -17,10 +21,11 @@ function trimUrl(url: string): string | null {
     }
     return null;
 }
+//
 
-// 1. on extension startup
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (tab.url && tab.url.includes("youtube.com")) {
+    const YouTube: boolean = tab.url && tab.url.includes("youtube.com");
+    if (YouTube) {
         if (changeInfo.title && changeInfo.title.includes("YouTube")) {
             console.log("new video!");
             chrome.tabs.sendMessage(tabId, {
@@ -45,6 +50,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     //     chrome.runtime.lastError && console.log("kurwa fail!11");
     // }
     //
+});
+
+// relay actions back to same content scripts
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action) {
+        chrome.tabs.sendMessage(sender.tab.id, message);
+    }
 });
 
 console.log("new bg script");

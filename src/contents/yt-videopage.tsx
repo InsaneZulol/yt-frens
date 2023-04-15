@@ -2,7 +2,7 @@
 import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
 import { useEffect, useState } from "react";
 import { UPDATE_ACTIVITY_STATE } from "~activity";
-import { MESSAGE_ACTIONS } from "~store";
+import { MESSAGE_ACTIONS } from "~types/messages";
 
 export const config: PlasmoCSConfig = {
     matches: ["https://www.youtube.com/*", "http://www.youtube.com/*"], // nie videopage, bo SPA. Ładujemy odrazu i mutation observer czeka na elem 'video'.
@@ -14,10 +14,13 @@ export const config: PlasmoCSConfig = {
 export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
     document.querySelector("video");
 
-export const VideoListeners = () => {
+export const Video = () => {
     const [attachedTo, setAttachedTo] = useState<string>("self");
+    console.log("video 🧏 component rendered");
 
     useEffect(() => {
+        // add listener for messages
+        // receive messages from this - same - content script through background script relay
         chrome.runtime.onMessage.addListener((message) => {
             if (message.action == MESSAGE_ACTIONS.ATTACH) {
                 if (message.params.user_id) {
@@ -26,33 +29,40 @@ export const VideoListeners = () => {
                 }
             }
         });
+
+        // add listeners for video activity
+        const video = document.querySelector("video");
+        video.addEventListener("pause", (event) => {
+            console.debug("PAUSE ⏸️");
+            UPDATE_ACTIVITY_STATE({
+                is_playing: false,
+                video_timestamp: video.currentTime
+            });
+        });
+        video.addEventListener("play", (event) => {
+            console.debug("PLAY ▶️");
+            UPDATE_ACTIVITY_STATE({
+                is_playing: true,
+                video_timestamp: video.currentTime
+            });
+        });
+        // todo: youtube by default pauses when you start
+        // seeking. This causes unnecesary paused/played
+        // events. Figure it out.
+        video.addEventListener("seeked", (event) => {
+            console.debug("video seeked ⌚");
+            UPDATE_ACTIVITY_STATE({ video_timestamp: video.currentTime });
+        });
+        // video.addEventListener("volumechange", (event) => {
+        //     if(video.muted)
+        //     UPDATE_ACTIVITY_STATE({ video_muted: true });
+        //     console.log("vol change");
+        // });
     }, []);
 
-    console.log("?????????????");
-    const video = document.querySelector("video");
-    video.addEventListener("pause", (event) => {
-        console.debug("PAUSE ⏸️");
-        UPDATE_ACTIVITY_STATE({ is_playing: false, video_timestamp: video.currentTime });
-    });
-    video.addEventListener("play", (event) => {
-        console.debug("PLAY ▶️");
-        UPDATE_ACTIVITY_STATE({ is_playing: true, video_timestamp: video.currentTime });
-    });
-    // todo: youtube by default pauses when you start
-    // seeking. This causes unnecesary paused/played
-    // events. Figure it out.
-    video.addEventListener("seeked", (event) => {
-        console.debug("video seeked ⌚");
-        UPDATE_ACTIVITY_STATE({ video_timestamp: video.currentTime });
-    });
-    // video.addEventListener("volumechange", (event) => {
-    //     if(video.muted)
-    //     UPDATE_ACTIVITY_STATE({ video_muted: true });
-    //     console.log("vol change");
-    // });
     return <button>huuuj xd</button>;
 };
-export default VideoListeners;
+export default Video;
 
 // // Przykład użycia pokojów w demo supabase realtime demo https://github.com/supabase/realtime/blob/main/demo/pages/%5B...slug%5D.tsx
 

@@ -1,23 +1,12 @@
 {
-  "extends": "plasmo/templates/tsconfig.base",
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    ".plasmo/index.d.ts",
-    "./**/*.ts",
-    "./**/*.tsx",
-    "./types/*.ts"
-  ],
-  "compilerOptions": {
-    "paths": {
-      "~*": [
-        "./src/*"
-      ],
-      "tabs": [
-        "./src/tabs/*"
-      ]
-    },
-    "baseUrl": "."
-  }
+    "extends": "plasmo/templates/tsconfig.base",
+    "exclude": ["node_modules"],
+    "include": [".plasmo/index.d.ts", "./**/*.ts", "./**/*.tsx", "src/types/*.ts"],
+    "compilerOptions": {
+        "paths": {
+            "~*": ["./src/*"],
+            "tabs": ["./src/tabs/*"]
+        },
+        "baseUrl": "."
+    }
 }

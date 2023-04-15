@@ -2,10 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "~store";
 import type { ActivityI } from "~/activity";
 import { time } from "console";
-
-export const useFriendActivity = () => {
-    const [status, setStatus] = useState<FriendStatus>("unknown");
-};
+import { MESSAGE_ACTIONS, type TARGET, type CHROME_API_MESSAGE } from "~types/messages";
 
 export const Friend = (props) => {
     console.log("💥rendering ", props.nickname, " component💥");
@@ -116,8 +113,16 @@ export const Friend = (props) => {
         }
     }, [status]);
 
+    const attach = async (user_id: string) => {
+        console.log("click!👆");
+        chrome.runtime.sendMessage({
+            action: MESSAGE_ACTIONS.ATTACH,
+            params: { user_id } as TARGET
+        } as CHROME_API_MESSAGE);
+    };
     return (
         <div
+            onClick={() => attach(props.uuid)}
             style={{
                 background: "black",
                 padding: 3,
