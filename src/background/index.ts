@@ -1,9 +1,5 @@
 import type { ActivityI } from "~activity";
-import {
-    MESSAGE_ACTIONS,
-    type API_MESSAGING_EVENTS,
-    type TAB_UPDATE
-} from "~types/messages";
+import { MSG_EVENTS, type API_MSG_EVENTS, type TAB_UPDATE } from "~types/messages";
 
 const trimTitle = (title: string): string => {
     if (title) {
@@ -27,32 +23,19 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (YouTube) {
         if (changeInfo.title && changeInfo.title.includes("YouTube")) {
             chrome.tabs.sendMessage(tabId, {
-                action: MESSAGE_ACTIONS.TAB_UPDATE,
+                event: MSG_EVENTS.TAB_UPDATE,
                 params: {
                     url: tab.url,
                     title: trimTitle(tab.title)
                 } as TAB_UPDATE
-            } as API_MESSAGING_EVENTS);
+            } as API_MSG_EVENTS);
         }
     }
-    // update_tab_stat
-    // const updated_data = /*<chrome.tabs.TabChangeInfo>*/ <any>{};
-    // if (changeInfo.url) updated_data.url = trimUrl(changeInfo.url);
-    // if (changeInfo.title) updated_data.title = trimTitle(changeInfo.title);
-    // if (changeInfo.mutedInfo && changeInfo.mutedInfo.muted !== undefined)
-    //     updated_data.tab_muted = changeInfo.mutedInfo.muted;
-
-    // if (Object.keys(updated_data).length > 0) {
-    //     console.log("sending tab update message to cs", updated_data);
-    //     chrome.tabs.sendMessage(tabId, updated_data);
-    //     chrome.runtime.lastError && console.log("kurwa fail!11");
-    // }
-    //
 });
 
-// relay actions back to same content scripts
+// relay events back to same content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action) {
+    if (message.event) {
         chrome.tabs.sendMessage(sender.tab.id, message);
     }
 });

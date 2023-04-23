@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "~store";
 import type { ActivityI } from "~/activity";
 import { time } from "console";
-import { MESSAGE_ACTIONS, type TARGET, type API_MESSAGING_EVENTS } from "~types/messages";
+import { MSG_EVENTS, type API_MSG_EVENTS, type VID_UPDATE } from "~types/messages";
+import { LS_SET_ATTACHED_TO } from "~attached-to";
 
 export const Friend = (props) => {
     console.log("💥rendering ", props.nickname, " component💥");
@@ -40,6 +41,18 @@ export const Friend = (props) => {
     const onActivity = (update: ActivityI) => {
         const new_activity = { ...activity, ...update };
         console.log("new kurwa merged 🐒 activity ", new_activity);
+        // transmit this activity to video controller
+        if (update.is_playing || update.video_timestamp) {
+            console.log("vid_update");
+            chrome.runtime.sendMessage({
+                event: MSG_EVENTS.VID_UPDATE,
+                params: {
+                    is_playing: update.is_playing,
+                    video_pos: update.video_timestamp
+                } as VID_UPDATE
+            } as API_MSG_EVENTS);
+        }
+        //
         setActivity(new_activity);
     };
     // subscribes to activity channel of this friend
@@ -113,40 +126,42 @@ export const Friend = (props) => {
         }
     }, [status]);
 
-    const attach = async (user_id: string) => {
+    const attach = async (e) => {
+        e.preventDefault();
         console.log("click!👆");
-        chrome.runtime.sendMessage({
-            action: MESSAGE_ACTIONS.ATTACH,
-            params: { user_id } as TARGET
-        } as API_MESSAGING_EVENTS);
+        window.location.href = activity.video_url;
+        LS_SET_ATTACHED_TO(props.uuid);
+        // chrome.runtime.sendMessage({
+        //     event: MSG_EVENTS.ATTACH,
+        //     params: { user_id } as TARGET
+        // } as API_MSG_EVENTS);
     };
     return (
-        <a href={activity.video_url}>
-            <div
-                onClick={() => attach(props.uuid)}
-                style={{
-                    background: "black",
-                    padding: 3,
-                    color: "white",
-                    fontSize: 10,
-                    borderRadius: "10px",
-                    height: 120,
-                    width: 180,
-                    marginTop: 8
-                }}
-                className="friend_item">
-                {props.nickname}
-                <div>
-                    Last seen {(new Date().getTime() - lastSeen.getTime()) / 1000} sec.
-                    ago.
-                </div>
-                <div>VideoURL: {activity.video_url}</div>
-                <div>Title: {activity.video_name}</div>
-                <div>Playing: {activity.is_playing ? "Yes" : "No"}</div>
-                <div>At: {activity.video_timestamp}</div>
-                <div>{status}</div>
+        // <a href={activity.video_url} >
+        <div
+            onClick={attach}
+            style={{
+                background: "black",
+                padding: 3,
+                color: "white",
+                fontSize: 10,
+                borderRadius: "10px",
+                height: 120,
+                width: 180,
+                marginTop: 8
+            }}
+            className="friend_item">
+            {props.nickname}
+            <div>
+                Last seen {(new Date().getTime() - lastSeen.getTime()) / 1000} sec. ago.
             </div>
-        </a>
+            <div>VideoURL: {activity.video_url}</div>
+            <div>Title: {activity.video_name}</div>
+            <div>Playing: {activity.is_playing ? "Yes" : "No"}</div>
+            <div>At: {activity.video_timestamp}</div>
+            <div>{status}</div>
+        </div>
+        // </a>
     );
 };
 

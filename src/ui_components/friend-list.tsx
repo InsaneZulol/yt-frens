@@ -21,7 +21,7 @@ const FriendList = () => {
     }, []);
 
     useEffect(() => {
-        console.log("second useffect!");
+        console.debug("re/subscribed to friend status ch(postgres)");
         if (postgresChangesCh) {
             postgresChangesCh.subscribe(async (status) => {
                 if (status === "SUBSCRIBED") console.log("subbed postgres changes");

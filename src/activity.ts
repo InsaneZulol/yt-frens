@@ -1,26 +1,28 @@
 import type { RealtimeChannel } from "@supabase/supabase-js";
-import { MESSAGE_ACTIONS, type TAB_UPDATE } from "~types/messages";
+import { MSG_EVENTS, type TAB_UPDATE } from "~types/messages";
 import { supabase } from "~store";
 
 export interface ActivityI {
-    // event_timestamp: number;
-    is_playing?: boolean;
+    // user's tab info data
     video_url?: string;
     video_name?: string;
-    video_duration?: number;
-    video_timestamp?: number;
     tab_muted?: boolean;
     video_muted?: boolean;
+    // user's video controller data
+    is_playing?: boolean;
+    video_duration?: number;
+    video_timestamp?: number;
+    // event_timestamp: number;
 }
 
 let ACTIVITY_STATE: ActivityI = {
-    is_playing: null,
     video_url: null,
     video_name: null,
-    video_duration: null,
-    video_timestamp: null,
+    tab_muted: null,
     video_muted: null,
-    tab_muted: null
+    is_playing: null,
+    video_duration: null,
+    video_timestamp: null
 };
 
 export function UPDATE_ACTIVITY_STATE(new_activity: ActivityI): void {
@@ -50,7 +52,7 @@ export async function launchActivityCh() {
     // listen to tab updates messages from the service worker
     function listenToTabUpdates() {
         chrome.runtime.onMessage.addListener((message) => {
-            if (message.action && message.action === MESSAGE_ACTIONS.TAB_UPDATE)
+            if (message.event && message.event === MSG_EVENTS.TAB_UPDATE)
                 UPDATE_ACTIVITY_STATE({
                     video_url: message?.params?.url ?? ACTIVITY_STATE.video_url,
                     video_name: message?.params?.title ?? ACTIVITY_STATE.video_name

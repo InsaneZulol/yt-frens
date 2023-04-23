@@ -1,6 +1,10 @@
 // This file state should be shared and ontop.
 
-import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
+import type {
+    PlasmoCSConfig,
+    PlasmoGetInlineAnchor,
+    PlasmoGetOverlayAnchor
+} from "plasmo";
 import { launchActivityCh } from "~/activity";
 import { isLoggedIn, logout, useSession } from "~auth";
 import { sendHeartbeat } from "~db";
@@ -12,6 +16,7 @@ export const config: PlasmoCSConfig = {
     all_frames: true,
     run_at: "document_end"
 };
+
 // IIFE
 (async function init() {
     async function initiateHeartbeat() {
@@ -21,6 +26,7 @@ export const config: PlasmoCSConfig = {
     if (isLoggedIn()) {
         initiateHeartbeat();
         launchActivityCh();
+        // validateAttachedTo(); TODO
     }
 
     //   email: 'mariusz@wirtualnapolska.pl',
@@ -28,8 +34,8 @@ export const config: PlasmoCSConfig = {
     // });
 })();
 
-export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
-    document.querySelector("#guide-inner-content #sections :not(:first-child) #items ");
+export const getInlineAnchor: PlasmoGetOverlayAnchor = async () =>
+    document.querySelector("#masthead-container");
 export const RenderUI = () => {
     console.log(">> gdzie jest panel?");
     const sessionStatus = useSession();
