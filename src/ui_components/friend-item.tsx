@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "~store";
 import type { ActivityI } from "~/activity";
-import { time } from "console";
 import { MSG_EVENTS, type API_MSG_EVENTS, type VID_UPDATE } from "~types/messages";
-import { LS_SET_ATTACHED_TO } from "~attached-to";
+import { LS_SET_ATTACHED_TO } from "~local-storage";
 
 export const Friend = (props) => {
     console.log("💥rendering ", props.nickname, " component💥");

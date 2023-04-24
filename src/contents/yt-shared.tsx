@@ -34,8 +34,9 @@ export const config: PlasmoCSConfig = {
     // });
 })();
 
-export const getInlineAnchor: PlasmoGetOverlayAnchor = async () =>
-    document.querySelector("#masthead-container");
+// Don't neeed to attach it to any anchor. We just anchor it by default at the top.
+// export const getOverlayAnchor: PlasmoGetOverlayAnchor = async () =>
+//     document.querySelector("#container #end");
 export const RenderUI = () => {
     console.log(">> gdzie jest panel?");
     const sessionStatus = useSession();
@@ -51,15 +52,6 @@ export const RenderUI = () => {
             </>
         );
     }
-
-    return (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-            <div>
-                <FriendList></FriendList>
-            </div>
-            <button onClick={() => logout()}>Wyloguj</button>
-        </div>
-    );
 };
 
 export default RenderUI;

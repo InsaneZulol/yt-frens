@@ -1,18 +1,46 @@
-.debug_panel {
-    width: 400px;
-    border-radius: 15px;
-    border-radius: 20px;
-    padding: 20px;
-    margin: 20px;
-    background-color: black;
-    box-shadow: 3px 3px 5px white;
-    margin: 2px;
-    background-color: #272727;
-    box-shadow: 3px 3px 5px #191919;
+.hidden {
+    display: none !important;
 }
-
-.dbg-room_id_nr {
+.status-pill {
+    cursor: pointer;
+    background-color: rgb(24, 24, 24);
     width: 200px;
-    color: green;
+    height: 40px;
+    /* z-index: 99999; */
+    margin-top: 1px;
+    margin-left: 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
+.status-pill-toggled {
+    border-radius: 20px 20px 0px 0px;
+}
+
+.friend-list {
+    display: flex;
+    cursor: default;
+    flex-direction: column;
+    user-select: none;
+    align-items: center;
+    background-color: rgb(24, 24, 24);
+    /* padding: 12px; */
+    color: white;
+    font-size: 20;
+    border-radius: 0 0 10px 10px;
+    height: 300px;
+    width: 200px;
+    margin-top: 40px;
+    margin-left: -1px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-top: 0px;
+}
+
+.status-pill-content {
+    display: flex;
+    flex-direction: row;
+}
+.status-pill-content-friends {
+    width: 100%;
+    max-width: 32px;
+}

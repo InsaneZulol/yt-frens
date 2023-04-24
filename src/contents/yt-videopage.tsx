@@ -1,8 +1,7 @@
-// import { supabase } from "~store";
 import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
 import { useEffect, useRef, useState } from "react";
 import { UPDATE_ACTIVITY_STATE } from "~activity";
-import { LS_GET_ATTACHED_TO, LS_SET_ATTACHED_TO } from "~attached-to";
+import { LS_GET_ATTACHED_TO, LS_SET_ATTACHED_TO } from "~local-storage";
 import { MSG_EVENTS, type API_MSG_EVENTS } from "~types/messages";
 
 export const config: PlasmoCSConfig = {

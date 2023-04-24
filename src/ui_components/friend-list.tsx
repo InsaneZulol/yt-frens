@@ -39,25 +39,6 @@ const FriendList = () => {
             realtimeChannel={postgresChangesCh}></Friend>
     ));
 
-    return (
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                background: "red",
-                padding: 12,
-                color: "white",
-                fontSize: 20,
-                borderRadius: "20px",
-                height: 250,
-                width: 180,
-                marginTop: 8
-            }}
-            className="friend_list">
-            Friends
-            <div>{listItems}</div>
-        </div>
-    );
+    return <div>{listItems}</div>;
 };
 export default FriendList;
