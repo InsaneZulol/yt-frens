@@ -1,97 +1,98 @@
 .hidden {
     display: none !important;
 }
-.status-pill {
-    background-color: rgb(24, 24, 24);
-    width: 200px;
-    height: 40px;
-    /* z-index: 99999; */
-    margin-top: 1px;
-    margin-left: 8px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: -2px -2px 10px 4px #42b3e73d, 3px 3px 10px 0px rgba(17, 210, 178, 0.52);
-}
 
-.status-pill-toggled {
-    border-radius: 20px 20px 0px 0px;
+.pill-toggled {
+    border-radius: 20px 20px 0px 0px !important;
 }
 
 .friend-list {
     display: flex;
-    cursor: default;
     flex-direction: column;
-    user-select: none;
     align-items: center;
+    position: absolute;
+    top: 100%;
+    left: 0px;
+    cursor: default;
     background-color: rgb(24, 24, 24);
-    /* padding: 12px; */
     color: white;
     font-size: 20;
     border-radius: 0 0 10px 10px;
     height: 300px;
-    width: 200px;
-    margin-top: 0px;
-    margin-left: -1px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    /* pill width + padding */
+    width: 230px;
+    margin-left: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-top: 0px;
+    user-select: none;
 }
 
-.status-pill-content {
+.pill-container {
+    display: relative;
+    min-height: 40px;
+}
+
+.pill {
+    position: relative;
     display: flex;
-    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
-    width: 100%;
-    max-height: 40px;
-    overflow: hidden;
+    width: 220px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: rgb(24, 24, 24);
+    box-shadow: -2px -2px 10px 4px #42b3e73d, 3px 3px 10px 0px rgba(17, 210, 178, 0.52);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0 10px 0 0;
+    margin-left: 8px;
 }
 
-/* Friends Button */
-.status-pill-content-friends {
+.left {
     cursor: pointer;
-    max-width: 33%;
-    width: 40px;
-    /* border: 1px solid purple; */
-    border-right: 1px solid rgba(255, 255, 255, 0.25);
-    /* top right bottom left */
-    padding: 5px 0px 2px 12px;
-}
-.status-pill-content-friends:hover {
-    background-color: rgb(48, 48, 48);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    /* border: solid 1px red; */
     border-radius: 20px 0 0 20px;
-}
-.status-pill-content-friends-icon {
-    max-height: 28px;
-    overflow: hidden;
+    width: 25%;
 }
 
-/* Center area: status */
-.status-pill-content-status {
+.left:hover {
+    background-color: rgb(48, 48, 48);
+}
+
+.left img {
+    height: 80%;
+}
+
+.center {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
     align-items: flex-start;
-    max-width: 30%;
-    width: 100%;
-    /* border: 1px solid green; */
-    font-size: 12px;
+    justify-content: center;
+    height: 80%;
+    margin: 0 10px;
+    width: 40%;
 }
 
-.status-pill-content-status-name {
+.center .name {
+    font-size: 14px;
+    font-weight: bold;
     color: #42b3e7;
 }
 
-.status-pill-content-status-activity {
-    color: #299acfc5;
-    font-size: 9px;
+.center .status {
+    font-size: 11px;
+    color: #42b3e7a1;
 }
 
-/* Avatar */
-.status-pill-content-avatar {
-    max-width: 33%;
-    /* border: 1px solid blue; */
+.right {
+    height: 80%;
 }
-.status-pill-content-avatar-img {
-    max-height: 40px;
-    border-radius: 20px;
-    /* border: 2px solid rgba(172, 255, 47, 0.64); */
+
+.avatar {
+    height: 100%;
+    border-radius: 50%;
 }

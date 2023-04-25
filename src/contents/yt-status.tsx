@@ -37,23 +37,17 @@ export const StatusPill = () => {
 
     if (sessionStatus === "logged_in") {
         return (
-            <div className={toggled ? "status-pill status-pill-toggled" : "status-pill"}>
-                <div className="status-pill-content">
-                    <div className="status-pill-content-friends" onClick={toggle}>
-                        <img
-                            className="status-pill-content-friends-icon"
-                            src={gay}
-                            alt=""
-                        />
+            <div className="pill-container">
+                <div className={toggled ? "pill pill-toggled" : "pill"}>
+                    <div className="left" onClick={toggle}>
+                        <img src={gay} alt="" />
                     </div>
-                    <div className="status-pill-content-status">
-                        <div className="status-pill-content-status-name">Nickname</div>
-                        <div className="status-pill-content-status-activity">
-                            Watching
-                        </div>
+                    <div className="center">
+                        <div className="name">Nickname</div>
+                        <div className="status">Watching</div>
                     </div>
-                    <div className="status-pill-content-avatar">
-                        <img className="status-pill-content-avatar-img" src={av} alt="" />
+                    <div className="right">
+                        <img className="avatar" src={av} alt="" />
                     </div>
                 </div>
                 <div className={toggled ? "friend-list" : "hidden"}>
@@ -65,7 +59,7 @@ export const StatusPill = () => {
     } else
         return (
             <div
-                className={"status-pill"}
+                className={"pill"}
                 // onClick={} open login modal
             >
                 <button className="btn-open-login-modal">Sign in kurwa</button>
