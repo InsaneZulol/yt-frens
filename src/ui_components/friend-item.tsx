@@ -136,29 +136,42 @@ export const Friend = (props) => {
         // } as API_MSG_EVENTS);
     };
     return (
-        <div
-            onClick={attach}
-            style={{
-                background: "black",
-                padding: 3,
-                color: "white",
-                fontSize: 10,
-                borderRadius: "10px",
-                height: 120,
-                width: 180,
-                marginTop: 8
-            }}
-            className="friend_item">
-            {props.nickname}
-            <div>
-                Last seen {(new Date().getTime() - lastSeen.getTime()) / 1000} sec. ago.
+        <div className="friend-item-container">
+            <div className="friend-item-left">
+                <div className="friend-item-left-av"></div>
             </div>
-            <div>VideoURL: {activity.video_url}</div>
-            <div>Title: {activity.video_name}</div>
-            <div>Playing: {activity.is_playing ? "Yes" : "No"}</div>
-            <div>At: {activity.video_timestamp}</div>
-            <div>{status}</div>
+            <div className="friend-item-center">
+                <div className="friend-item-center-flex-col">
+                    <div className="friend-item-center-name">{props.nickname}</div>
+                    <div className="friend-item-center-activity">
+                        How to enlarge penis tutorial with Dr. Cuckenberg{" "}
+                        {/* {activity.video_name} */}
+                    </div>
+                    <div className="friend-item-center-progress">13:33 / 21:37</div>
+                </div>
+            </div>
+            <div className="friend-item-right">{/* icon */}</div>
         </div>
+
+        //     onClick={attach}
+        //     style={{
+        //         background: "black",
+        //         padding: 3,
+        //         color: "white",
+        //         fontSize: 10,
+        //         borderRadius: "10px",
+        //         height: 120,
+        //         width: 180,
+        //         marginTop: 8
+        //     }}
+        //     className="friend_item">
+        //     {props.nickname}
+        //         Last seen {(new Date().getTime() - lastSeen.getTime()) / 1000} sec. ago.
+        //     <div>VideoURL: {activity.video_url}</div>
+        //     <div>Title: {activity.video_name}</div>
+        //     <div>Playing: {activity.is_playing ? "Yes" : "No"}</div>
+        //     <div>At: {activity.video_timestamp}</div>
+        //     <div>{status}</div>
     );
 };
 

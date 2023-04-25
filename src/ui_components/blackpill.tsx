@@ -16,20 +16,20 @@ export const BlackPill = () => {
         return (
             <div className="pill-container">
                 <div className={toggled ? "pill pill-toggled" : "pill"}>
-                    <div className="left" onClick={toggle}>
+                    <div className="pill-left" onClick={toggle}>
                         <img src={gay} alt="" />
                     </div>
-                    <div className="center">
+                    <div className="pill-center">
                         <div className="name">Nickname</div>
                         <div className="status">Watching</div>
                     </div>
-                    <div className="right">
+                    <div className="pill-right">
                         <img className="avatar" src={av} alt="" />
                     </div>
                 </div>
                 <div className={toggled ? "friend-list" : "hidden"}>
                     <FriendList></FriendList>
-                    <button onClick={() => logout()}>Wyloguj</button>
+                    {/* <button onClick={() => logout()}>Wyloguj</button> */}
                 </div>
             </div>
         );
