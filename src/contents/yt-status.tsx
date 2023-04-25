@@ -9,6 +9,7 @@ import { useSession, logout, login } from "~auth";
 import FriendList from "~ui_components/friend-list";
 import styleText from "data-text:./yt-style.css";
 import av from "data-base64:/assets/alan_av.jpg";
+import gay from "data-base64:/assets/gay.png";
 
 export const config: PlasmoCSConfig = {
     matches: ["https://www.youtube.com/*", "http://www.youtube.com/*"],
@@ -30,20 +31,30 @@ export const StatusPill = () => {
     const sessionStatus = useSession();
     let toggle = (event) => {
         event.preventDefault();
-        if (event.target === event.currentTarget) setToggled(!toggled);
+        // if (event.target === event.currentTarget)
+        setToggled(!toggled);
     };
 
     if (sessionStatus === "logged_in") {
         return (
-            <div
-                className={toggled ? "status-pill status-pill-toggled" : "status-pill"}
-                onClick={toggle}>
+            <div className={toggled ? "status-pill status-pill-toggled" : "status-pill"}>
                 <div className="status-pill-content">
-                    <div className="status-pill-content-friends">
-                        {/* <img src={av} alt="" /> */}
+                    <div className="status-pill-content-friends" onClick={toggle}>
+                        <img
+                            className="status-pill-content-friends-icon"
+                            src={gay}
+                            alt=""
+                        />
                     </div>
-                    <div className="status-pill-content-status"></div>
-                    <div className="status-pill-content-avatar"></div>
+                    <div className="status-pill-content-status">
+                        <div className="status-pill-content-status-name">Nickname</div>
+                        <div className="status-pill-content-status-activity">
+                            Watching
+                        </div>
+                    </div>
+                    <div className="status-pill-content-avatar">
+                        <img className="status-pill-content-avatar-img" src={av} alt="" />
+                    </div>
                 </div>
                 <div className={toggled ? "friend-list" : "hidden"}>
                     <FriendList></FriendList>
