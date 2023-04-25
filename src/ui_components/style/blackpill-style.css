@@ -1,30 +1,6 @@
-.hidden {
-    display: none !important;
-}
-
+/* BlackPill */
 .pill-toggled {
     border-radius: 20px 20px 0px 0px !important;
-}
-
-.friend-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: absolute;
-    top: 100%;
-    left: 0px;
-    cursor: default;
-    background-color: rgb(24, 24, 24);
-    color: white;
-    font-size: 20;
-    border-radius: 0 0 10px 10px;
-    height: 300px;
-    /* pill width + padding */
-    width: 230px;
-    margin-left: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-top: 0px;
-    user-select: none;
 }
 
 .pill-container {
@@ -45,6 +21,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 0 10px 0 0;
     margin-left: 8px;
+    user-select: none;
 }
 
 .left {
@@ -64,7 +41,7 @@
 }
 
 .left img {
-    height: 80%;
+    height: 50%;
 }
 
 .center {
@@ -95,4 +72,8 @@
 .avatar {
     height: 100%;
     border-radius: 50%;
+}
+
+.hidden {
+    display: none !important;
 }

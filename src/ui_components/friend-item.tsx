@@ -136,7 +136,6 @@ export const Friend = (props) => {
         // } as API_MSG_EVENTS);
     };
     return (
-        // <a href={activity.video_url} >
         <div
             onClick={attach}
             style={{
@@ -160,7 +159,6 @@ export const Friend = (props) => {
             <div>At: {activity.video_timestamp}</div>
             <div>{status}</div>
         </div>
-        // </a>
     );
 };
 

@@ -1,15 +1,11 @@
 // This file state should be shared and ontop.
 
-import type {
-    PlasmoCSConfig,
-    PlasmoGetInlineAnchor,
-    PlasmoGetOverlayAnchor
-} from "plasmo";
+import type { PlasmoCSConfig } from "plasmo";
 import { launchActivityCh } from "~/activity";
 import { isLoggedIn, logout, useSession } from "~auth";
 import { sendHeartbeat } from "~db";
-import FriendList from "~ui_components/friend-list";
 import LoginModal from "~ui_components/login-modal";
+import type { PlasmoGetStyle } from "plasmo";
 
 export const config: PlasmoCSConfig = {
     matches: ["https://www.youtube.com/*", "http://www.youtube.com/*"],
