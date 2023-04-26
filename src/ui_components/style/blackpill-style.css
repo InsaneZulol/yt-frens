@@ -1,6 +1,8 @@
 /* BlackPill */
 .pill-toggled {
     border-radius: 20px 20px 0px 0px !important;
+    /* .pill + padding + margin */
+    width: 320px !important;
 }
 
 .pill-container {
@@ -9,11 +11,12 @@
 }
 
 .pill {
+    transition: all 0.3s;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 220px;
+    width: 230px;
     height: 40px;
     border-radius: 20px;
     background-color: rgb(24, 24, 24);
@@ -34,6 +37,7 @@
     /* border: solid 1px red; */
     border-radius: 20px 0 0 20px;
     width: 25%;
+    transition: all 0.25s;
 }
 
 .pill .pill-left:hover {

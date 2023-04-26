@@ -1,4 +1,13 @@
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
 .friend-list {
+    /* animation: fadeIn 0.1s; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,7 +21,7 @@
     border-radius: 0 0 10px 10px;
     height: 300px;
     /* pill width + padding */
-    width: 230px;
+    width: 330px;
     margin-left: 8px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-top: 0px;
