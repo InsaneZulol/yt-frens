@@ -3,6 +3,7 @@ import { supabase } from "~store";
 import type { ActivityI } from "~/activity";
 import { MSG_EVENTS, type API_MSG_EVENTS, type VID_UPDATE } from "~types/messages";
 import { LS_SET_ATTACHED_TO } from "~local-storage";
+import av from "data-base64:/assets/alan_av.jpg";
 
 export const Friend = (props) => {
     console.log("💥rendering ", props.nickname, " component💥");
@@ -138,7 +139,7 @@ export const Friend = (props) => {
     return (
         <div className="friend-item-container">
             <div className="friend-item-left">
-                <div className="friend-item-left-av"></div>
+                <img src={av} alt="" />
             </div>
             <div className="friend-item-center">
                 <div className="friend-item-center-flex-col">
@@ -150,7 +151,17 @@ export const Friend = (props) => {
                     <div className="friend-item-center-progress">13:33 / 21:37</div>
                 </div>
             </div>
-            <div className="friend-item-right">{/* icon */}</div>
+            <div className="friend-item-right">
+                {/* https://phosphoricons.com */}
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    fill="currentColor"
+                    viewBox="0 0 256 256">
+                    <path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"></path>
+                </svg>
+            </div>
         </div>
 
         //     onClick={attach}

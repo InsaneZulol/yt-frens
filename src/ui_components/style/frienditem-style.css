@@ -1,22 +1,72 @@
+@keyframes spin {
+    from {
+        transform: scale3d(2, 2, 1) rotateZ(0deg);
+    }
+    to {
+        transform: scale3d(2, 2, 1) rotateZ(360deg);
+    }
+}
+
+@keyframes biggy {
+    from {
+        transform: scale(1, 1);
+    }
+    to {
+        transform: scale(1.1, 1.2);
+    }
+}
+
+@keyframes lights {
+    from {
+        box-shadow: -2px -2px 10px 8px #42b3e73d,
+            3px 3px 10px 0px rgba(17, 210, 178, 0.52);
+    }
+    to {
+        box-shadow: 2px 2px 10px 4px #42b3e73d,
+            -3px -3px 10px 0px rgba(17, 210, 178, 0.52);
+    }
+}
+
+.spinny {
+    animation: spin 5s linear infinite;
+}
+.biggy {
+    animation: biggy 1ms linear infinite alternate;
+}
+.lights {
+    animation: lights 0.8s ease-in-out infinite alternate;
+}
+
 .friend-item-container {
     display: flex;
     flex-direction: row;
     font-size: 14px;
-    /* pill.width - margin */
     width: 320px;
-    /* max-width: 230px; */
-    /* border: 2px dotted crimson; */
+    height: 64px;
     box-sizing: border-box;
     margin: 6px 8px 0px 8px;
     border: 1px solid rgb(48, 48, 48);
-    border-radius: 0px 4px 4px 0px;
+    border-radius: 4px;
+    box-shadow: -2px -2px 10px 4px #42b3e73d, 3px 3px 10px 0px rgba(17, 210, 178, 0.52);
 }
 
 .friend-item-left {
-    width: 20%;
+    display: flex;
+    justify-content: center; /* horizontally center the content */
+    align-items: center; /* vertically center the content */
+    width: 50px;
+    max-width: 120px;
     margin-right: 4px;
-    border: 1px solid purple;
+    margin-left: 4px;
     border-radius: 4px;
+}
+
+.friend-item-left img {
+    min-width: 24px;
+    width: 100%;
+    height: auto;
+    border: solid 4px rgb(44, 44, 44);
+    border-radius: 8px;
 }
 
 .friend-item-center {
@@ -29,26 +79,40 @@
     flex-direction: column;
 }
 
-.friend-item-center-name {
+.friend-item-center-flex-col .friend-item-center-name {
     font-size: 16px;
+    margin-top: 4px;
+    margin-bottom: 2px;
 }
 
-.friend-item-center-activity {
+.friend-item-center-flex-col .friend-item-center-activity {
     font-size: 14px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    margin-bottom: 2px;
+    margin-right: 4px;
     /* border: 1px solid yellow; */
 }
 
-.friend-item-center-progress {
+.friend-item-center .friend-item-center-progress {
     font-size: 12px;
+    margin-bottom: 4px;
 }
 
 .friend-item-right {
-    width: 14%;
+    display: flex;
+    width: 20%;
+    justify-content: center; /* horizontally center the content */
+    align-items: center; /* vertically center the content */
     border-left: 1px solid rgb(48, 48, 48);
     cursor: pointer;
+}
+
+.friend-item-right svg {
+    width: 40%;
+    height: auto; /* maintain aspect ratio */
+    color: white;
 }
 
 .friend-item-right:hover {
