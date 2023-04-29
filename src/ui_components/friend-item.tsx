@@ -116,7 +116,6 @@ export const Friend = (props) => {
         addPostgresHandler();
         setStatus(calculateStatus); // on startup
     }, []);
-
     // subscribe to this friend activity, if he is online and was previously offline.
     // effect should run initially and rerun on status change
     useEffect(() => {
