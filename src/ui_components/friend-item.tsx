@@ -133,7 +133,14 @@ export const Friend = (props) => {
         LS_SET_ATTACHED_TO(props.uuid);
     };
     return (
-        <div className={"friend-item-container" + " " + status}>
+        <div
+            className={
+                "friend-item-container" +
+                " " +
+                status +
+                " " +
+                (activity.video_name && "watching")
+            }>
             {/* todo dodaj state watching a nie */}
             {/* // activity.video_name || "Online" */}
             <div className="friend-item-left">
@@ -154,9 +161,14 @@ export const Friend = (props) => {
                                 let min_ago = Math.floor(
                                     (new Date().getTime() - lastSeen.getTime()) / 60000
                                 );
+                                let hours_ago = Math.floor(min_ago / 60);
+                                let days_ago = Math.floor(hours_ago / 24);
                                 let text = "Last seen ";
-                                if (min_ago > 20160) {
-                                    return text + "more than two weeks ago";
+                                if (days_ago >= 2) {
+                                    return text + days_ago + " days ago";
+                                }
+                                if (min_ago > 120) {
+                                    return text + hours_ago + " hours ago";
                                 }
                                 if (min_ago == 1) {
                                     return text + "a minute ago";
