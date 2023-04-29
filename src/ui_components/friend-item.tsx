@@ -131,13 +131,11 @@ export const Friend = (props) => {
         console.log("click!👆");
         window.location.href = activity.video_url;
         LS_SET_ATTACHED_TO(props.uuid);
-        // chrome.runtime.sendMessage({
-        //     event: MSG_EVENTS.ATTACH,
-        //     params: { user_id } as TARGET
-        // } as API_MSG_EVENTS);
     };
     return (
-        <div className="friend-item-container">
+        <div className={"friend-item-container" + " " + status}>
+            {/* todo dodaj state watching a nie */}
+            {/* // activity.video_name || "Online" */}
             <div className="friend-item-left">
                 <img src={av} alt="" />
             </div>
@@ -145,10 +143,35 @@ export const Friend = (props) => {
                 <div className="friend-item-center-flex-col">
                     <div className="friend-item-center-name">{props.nickname}</div>
                     <div className="friend-item-center-activity">
-                        How to enlarge penis tutorial with Dr. Cuckenberg{" "}
-                        {/* {activity.video_name} */}
+                        {(() => {
+                            if (status === "online" && activity.video_name) {
+                                return activity.video_name;
+                            }
+                            if (status === "online") {
+                                return "Online";
+                            }
+                            if (status === "offline") {
+                                let min_ago = Math.floor(
+                                    (new Date().getTime() - lastSeen.getTime()) / 60000
+                                );
+                                let text = "Last seen ";
+                                if (min_ago > 20160) {
+                                    return text + "more than two weeks ago";
+                                }
+                                if (min_ago == 1) {
+                                    return text + "a minute ago";
+                                }
+                                if (min_ago < 1) {
+                                    return text + "recently";
+                                }
+                                if (min_ago > 1) {
+                                    return text + min_ago + " minutes ago";
+                                }
+                            }
+                            return <div>err</div>;
+                        })()}
                     </div>
-                    <div className="friend-item-center-progress">13:33 / 21:37</div>
+                    {/* <div className="friend-item-center-progress">13:33 / 21:37</div> */}
                 </div>
             </div>
             <div className="friend-item-right">
@@ -186,4 +209,4 @@ export const Friend = (props) => {
     );
 };
 
-type FriendStatus = "unknown" | "offline" | "afk" | "online";
+type FriendStatus = "unknown" | "offline" | "afk" | "online" | "watching";
