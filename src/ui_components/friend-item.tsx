@@ -7,17 +7,21 @@ import av from "data-base64:/assets/alan_av.jpg";
 
 export const Friend = (props) => {
     console.log("💥rendering ", props.nickname, " component💥");
-    const [lastSeen, setLastSeen] = useState<Date>(new Date(props.lastSeen));
+    const [lastSeen, setLastSeen] = useState<Date>(new Date(props.lastSeen)); // timestamp in ms epoch of last heartbeat
+    const [sinceLastSeen, setSinceLastSeen] = useState<number>(
+        new Date().getTime() - lastSeen.getTime()
+    ); // timestamp in ms of (now - last_heartbeat)
     const [status, setStatus] = useState<FriendStatus>("unknown");
     const [activity, setActivity] = useState<ActivityI>({});
     const act_ch = useRef(supabase.channel(`activity_ch:` + props.uuid));
     let rerender_timer = useRef<NodeJS.Timer>(null);
-    const rerender_timer_dur = 16000;
+    const rerender_timer_dur = 20000;
 
     let startRerenderTimer = () => {
         clearInterval(rerender_timer.current);
         rerender_timer.current = setInterval(() => {
-            setLastSeen(lastSeen); // rerender
+            console.debug("should re-render!");
+            setSinceLastSeen(new Date().getTime() - lastSeen.getTime()); // rerender
             const calculated_status = calculateStatus();
             if (calculated_status === "offline" && status !== "offline") {
                 setStatus("offline");
@@ -36,6 +40,27 @@ export const Friend = (props) => {
         } else {
             return "online";
         }
+    };
+
+    const getSinceLastSeenText = (): string => {
+        if (status === "offline") {
+            let min_ago = Math.floor(sinceLastSeen / 60000);
+            let hours_ago = Math.floor(min_ago / 60);
+            let days_ago = Math.floor(hours_ago / 24);
+            let text = "Last seen ";
+            if (days_ago >= 2) {
+                return text + days_ago + " days ago";
+            } else if (min_ago > 120) {
+                return text + hours_ago + " hours ago";
+            } else if (min_ago == 1) {
+                return text + "a minute ago";
+            } else if (min_ago < 1) {
+                return text + "just now";
+            } else if (min_ago > 1) {
+                return text + min_ago + " minutes ago";
+            }
+        }
+        return "gowno debilu";
     };
 
     const onActivity = (update: ActivityI) => {
@@ -141,7 +166,6 @@ export const Friend = (props) => {
                 (activity.video_name && "watching")
             }>
             {/* todo dodaj state watching a nie */}
-            {/* // activity.video_name || "Online" */}
             <div className="friend-item-left">
                 <img src={av} alt="" />
             </div>
@@ -152,34 +176,11 @@ export const Friend = (props) => {
                         {(() => {
                             if (status === "online" && activity.video_name) {
                                 return activity.video_name;
-                            }
-                            if (status === "online") {
+                            } else if (status === "online") {
                                 return "Online";
+                            } else {
+                                return getSinceLastSeenText();
                             }
-                            if (status === "offline") {
-                                let min_ago = Math.floor(
-                                    (new Date().getTime() - lastSeen.getTime()) / 60000
-                                );
-                                let hours_ago = Math.floor(min_ago / 60);
-                                let days_ago = Math.floor(hours_ago / 24);
-                                let text = "Last seen ";
-                                if (days_ago >= 2) {
-                                    return text + days_ago + " days ago";
-                                }
-                                if (min_ago > 120) {
-                                    return text + hours_ago + " hours ago";
-                                }
-                                if (min_ago == 1) {
-                                    return text + "a minute ago";
-                                }
-                                if (min_ago < 1) {
-                                    return text + "recently";
-                                }
-                                if (min_ago > 1) {
-                                    return text + min_ago + " minutes ago";
-                                }
-                            }
-                            return <div>err</div>;
                         })()}
                     </div>
                     {/* <div className="friend-item-center-progress">13:33 / 21:37</div> */}
