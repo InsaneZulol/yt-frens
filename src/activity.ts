@@ -53,11 +53,16 @@ export async function launchActivityCh() {
     function listenToTabUpdates() {
         chrome.runtime.onMessage.addListener((message) => {
             if (message.event && message.event === MSG_EVENTS.TAB_UPDATE)
+                // prettier-ignore
                 UPDATE_ACTIVITY_STATE({
                     video_url: message?.params?.url ?? ACTIVITY_STATE.video_url,
-                    video_name: message?.params?.title ?? ACTIVITY_STATE.video_name
+                    video_name: message?.params?.title ?? ACTIVITY_STATE.video_name,
+                    video_timestamp: message?.params?.video_timestamp ?? ACTIVITY_STATE.video_timestamp,
+                    video_duration: message?.params?.video_duration ?? ACTIVITY_STATE.video_duration,
+                    video_muted: message?.params?.video_muted ?? ACTIVITY_STATE.video_muted,
+                    is_playing: message?.params?.is_playing ?? ACTIVITY_STATE.is_playing
                     // tab_muted: message.tab_muted ?? ACTIVITY_STATE.tab_muted
-                });
+                } as ActivityI);
         });
     }
 

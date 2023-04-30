@@ -89,9 +89,6 @@
 }
 
 .friend-item-center {
-    /* border: 1px solid green; */
-    /* display: flex; */
-    /* flex-direction: column; */
     width: 66%;
 }
 
@@ -118,7 +115,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     margin-bottom: 2px;
-    margin-right: 4px;
+    margin-right: 8px;
     opacity: 60%;
 }
 

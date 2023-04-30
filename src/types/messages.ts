@@ -1,12 +1,12 @@
 export enum MSG_EVENTS {
     TAB_UPDATE = "TAB_UPDATE",
-    VID_UPDATE = "VID_UPDATE",
-    ATTACH = "ATTACH"
+    VID_DATA_REQUEST = "VID_DATA_REQUEST",
+    VID_UPDATE = "VID_UPDATE"
 }
 
-export interface TAB_UPDATE {
-    url: string;
-    title: string;
+export interface API_MSG_EVENTS {
+    event: MSG_EVENTS;
+    params?: TAB_UPDATE | VID_UPDATE;
 }
 
 export interface VID_UPDATE {
@@ -14,11 +14,16 @@ export interface VID_UPDATE {
     video_pos: number;
 }
 
-export interface TARGET {
-    user_id: string;
+export interface VID_DATA_RESPONSE {
+    video_timestamp: number;
+    video_duration: number;
+    video_muted: boolean;
+    is_playing: boolean;
 }
 
-export interface API_MSG_EVENTS {
-    event: MSG_EVENTS;
-    params: TAB_UPDATE | VID_UPDATE | TARGET;
+// tab update is full update, so it will request data from videopage, which
+// we will add ontop of tab data
+export interface TAB_UPDATE extends VID_DATA_RESPONSE {
+    url: string;
+    title: string;
 }

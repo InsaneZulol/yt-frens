@@ -1,5 +1,10 @@
 import type { ActivityI } from "~activity";
-import { MSG_EVENTS, type API_MSG_EVENTS, type TAB_UPDATE } from "~types/messages";
+import {
+    MSG_EVENTS,
+    type API_MSG_EVENTS,
+    type TAB_UPDATE,
+    type VID_DATA_RESPONSE
+} from "~types/messages";
 
 const trimTitle = (title: string): string => {
     if (title) {
@@ -18,22 +23,31 @@ function trimUrl(url: string): string | null {
     return null;
 }
 //
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     const YouTube: boolean = tab.url && tab.url.includes("youtube.com");
     if (YouTube) {
         if (changeInfo.title && changeInfo.title.includes("YouTube")) {
+            const resp = await chrome.tabs.sendMessage(tabId, {
+                event: MSG_EVENTS.VID_DATA_REQUEST
+            });
+            console.log("resp:", resp);
+
             chrome.tabs.sendMessage(tabId, {
                 event: MSG_EVENTS.TAB_UPDATE,
                 params: {
                     url: tab.url,
-                    title: trimTitle(tab.title)
+                    title: trimTitle(tab.title),
+                    video_timestamp: resp.video_timestamp,
+                    video_duration: resp.video_timestamp,
+                    video_muted: resp.video_muted,
+                    is_playing: resp.is_playing
                 } as TAB_UPDATE
             } as API_MSG_EVENTS);
         }
     }
 });
 
-// relay events back to same content scripts
+// relay events back to the same content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.event) {
         chrome.tabs.sendMessage(sender.tab.id, message);

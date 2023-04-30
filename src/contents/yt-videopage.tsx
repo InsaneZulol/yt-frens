@@ -2,7 +2,7 @@ import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
 import { useEffect, useRef, useState } from "react";
 import { UPDATE_ACTIVITY_STATE } from "~activity";
 import { LS_GET_ATTACHED_TO, LS_SET_ATTACHED_TO } from "~local-storage";
-import { MSG_EVENTS, type API_MSG_EVENTS } from "~types/messages";
+import { MSG_EVENTS, type API_MSG_EVENTS, type VID_DATA_RESPONSE } from "~types/messages";
 
 export const config: PlasmoCSConfig = {
     matches: ["https://www.youtube.com/*", "http://www.youtube.com/*"], // nie videopage, bo SPA. Ładujemy odrazu i mutation observer czeka na elem 'video'.
@@ -24,7 +24,7 @@ export const Video = () => {
         // RX
         // add listener for messages
         // receive messages from this - same - content script through background script relay
-        chrome.runtime.onMessage.addListener((message) => {
+        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message.event === MSG_EVENTS.VID_UPDATE) {
                 if (message.params.video_pos) {
                     console.log(
@@ -44,6 +44,15 @@ export const Video = () => {
                         message.params.is_playing ? video.play() : video.pause();
                     }
                 }
+            }
+            // sends response back to service worker
+            if (message.event === MSG_EVENTS.VID_DATA_REQUEST) {
+                sendResponse({
+                    video_timestamp: video.currentTime,
+                    video_duration: video.duration,
+                    video_muted: null,
+                    is_playing: !video.paused
+                } as VID_DATA_RESPONSE); // maybe send this anyway always at the start of this component instead of on response.
             }
         });
         // END OF RX
