@@ -116,13 +116,13 @@
     overflow: hidden;
     margin-bottom: 2px;
     margin-right: 8px;
-    opacity: 60%;
+    opacity: 80%;
 }
 
 .friend-item-center .friend-item-center-progress {
     font-size: 12px;
     margin-bottom: 4px;
-    opacity: 60%;
+    opacity: 50%;
 }
 
 .friend-item-right {

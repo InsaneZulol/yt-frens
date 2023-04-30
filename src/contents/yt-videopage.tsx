@@ -48,7 +48,7 @@ export const Video = () => {
             // sends response back to service worker
             if (message.event === MSG_EVENTS.VID_DATA_REQUEST) {
                 sendResponse({
-                    video_timestamp: video.currentTime,
+                    video_pos: video.currentTime,
                     video_duration: video.duration,
                     video_muted: null,
                     is_playing: !video.paused
@@ -63,14 +63,14 @@ export const Video = () => {
             console.debug("PAUSE ⏸️");
             UPDATE_ACTIVITY_STATE({
                 is_playing: false,
-                video_timestamp: video.currentTime
+                video_pos: video.currentTime
             });
         });
         video.addEventListener("play", (event) => {
             console.debug("PLAY ▶️");
             UPDATE_ACTIVITY_STATE({
                 is_playing: true,
-                video_timestamp: video.currentTime
+                video_pos: video.currentTime
             });
         });
         // todo: youtube by default pauses when you start
@@ -78,7 +78,7 @@ export const Video = () => {
         // events. Figure it out.
         video.addEventListener("seeked", (event) => {
             console.debug("video seeked ⌚");
-            UPDATE_ACTIVITY_STATE({ video_timestamp: video.currentTime });
+            UPDATE_ACTIVITY_STATE({ video_pos: video.currentTime });
         });
         // video.addEventListener("volumechange", (event) => {
         //     if(video.muted)

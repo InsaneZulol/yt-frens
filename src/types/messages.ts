@@ -15,7 +15,7 @@ export interface VID_UPDATE {
 }
 
 export interface VID_DATA_RESPONSE {
-    video_timestamp: number;
+    video_pos: number;
     video_duration: number;
     video_muted: boolean;
     is_playing: boolean;

@@ -37,8 +37,8 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
                 params: {
                     url: tab.url,
                     title: trimTitle(tab.title),
-                    video_timestamp: resp.video_timestamp,
-                    video_duration: resp.video_timestamp,
+                    video_pos: resp.video_pos,
+                    video_duration: resp.video_duration,
                     video_muted: resp.video_muted,
                     is_playing: resp.is_playing
                 } as TAB_UPDATE

@@ -67,13 +67,13 @@ export const Friend = (props) => {
         const new_activity = { ...activity, ...update };
         console.log("new kurwa merged 🐒 activity ", new_activity);
         // transmit this activity to video controller
-        if (update.is_playing || update.video_timestamp) {
+        if (update.is_playing || update.video_pos) {
             console.log("vid_update");
             chrome.runtime.sendMessage({
                 event: MSG_EVENTS.VID_UPDATE,
                 params: {
                     is_playing: update.is_playing,
-                    video_pos: update.video_timestamp
+                    video_pos: update.video_pos
                 } as VID_UPDATE
             } as API_MSG_EVENTS);
         }
@@ -183,7 +183,16 @@ export const Friend = (props) => {
                             }
                         })()}
                     </div>
-                    {/* <div className="friend-item-center-progress">13:33 / 21:37</div> */}
+
+                    <div className="friend-item-center-progress">
+                        {/* 13:33 / 21:37 */}
+                        {(() => {
+                            // prettier-ignore
+                            if (status === "online" && activity.video_name) {
+                                return activity.video_pos + " / " + activity.video_duration;
+                            }
+                        })()}
+                    </div>
                 </div>
             </div>
             <div className="friend-item-right">
@@ -216,7 +225,7 @@ export const Friend = (props) => {
         //     <div>VideoURL: {activity.video_url}</div>
         //     <div>Title: {activity.video_name}</div>
         //     <div>Playing: {activity.is_playing ? "Yes" : "No"}</div>
-        //     <div>At: {activity.video_timestamp}</div>
+        //     <div>At: {activity.video_pos}</div>
         //     <div>{status}</div>
     );
 };

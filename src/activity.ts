@@ -11,7 +11,7 @@ export interface ActivityI {
     // user's video controller data
     is_playing?: boolean;
     video_duration?: number;
-    video_timestamp?: number;
+    video_pos?: number;
     // event_timestamp: number;
 }
 
@@ -22,7 +22,7 @@ let ACTIVITY_STATE: ActivityI = {
     video_muted: null,
     is_playing: null,
     video_duration: null,
-    video_timestamp: null
+    video_pos: null
 };
 
 export function UPDATE_ACTIVITY_STATE(new_activity: ActivityI): void {
@@ -52,17 +52,18 @@ export async function launchActivityCh() {
     // listen to tab updates messages from the service worker
     function listenToTabUpdates() {
         chrome.runtime.onMessage.addListener((message) => {
-            if (message.event && message.event === MSG_EVENTS.TAB_UPDATE)
+            if (message.event && message.event === MSG_EVENTS.TAB_UPDATE) {
                 // prettier-ignore
                 UPDATE_ACTIVITY_STATE({
                     video_url: message?.params?.url ?? ACTIVITY_STATE.video_url,
                     video_name: message?.params?.title ?? ACTIVITY_STATE.video_name,
-                    video_timestamp: message?.params?.video_timestamp ?? ACTIVITY_STATE.video_timestamp,
+                    video_pos: message?.params?.video_pos ?? ACTIVITY_STATE.video_pos,
                     video_duration: message?.params?.video_duration ?? ACTIVITY_STATE.video_duration,
                     video_muted: message?.params?.video_muted ?? ACTIVITY_STATE.video_muted,
                     is_playing: message?.params?.is_playing ?? ACTIVITY_STATE.is_playing
                     // tab_muted: message.tab_muted ?? ACTIVITY_STATE.tab_muted
                 } as ActivityI);
+            }
         });
     }
 
