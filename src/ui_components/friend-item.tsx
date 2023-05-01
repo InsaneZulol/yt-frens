@@ -5,6 +5,12 @@ import { MSG_EVENTS, type API_MSG_EVENTS, type VID_UPDATE } from "~types/message
 import { LS_SET_ATTACHED_TO } from "~local-storage";
 import av from "data-base64:/assets/alan_av.jpg";
 
+const VideoStatus = ({ is_playing, video_pos }) => {
+    console.log("💊 progress component 💊");
+    const [isPlaying, setIsPlaying] = useState<boolean>(is_playing);
+    // const []
+};
+
 export const Friend = (props) => {
     console.log("💥rendering ", props.nickname, " component💥");
     const [lastSeen, setLastSeen] = useState<Date>(new Date(props.lastSeen)); // timestamp in ms epoch of last heartbeat
@@ -42,23 +48,21 @@ export const Friend = (props) => {
         }
     };
 
-    const getSinceLastSeenText = (): string => {
-        if (status === "offline") {
-            let min_ago = Math.floor(sinceLastSeen / 60000);
-            let hours_ago = Math.floor(min_ago / 60);
-            let days_ago = Math.floor(hours_ago / 24);
-            let text = "Last seen ";
-            if (days_ago >= 2) {
-                return text + days_ago + " days ago";
-            } else if (min_ago > 120) {
-                return text + hours_ago + " hours ago";
-            } else if (min_ago == 1) {
-                return text + "a minute ago";
-            } else if (min_ago < 1) {
-                return text + "just now";
-            } else if (min_ago > 1) {
-                return text + min_ago + " minutes ago";
-            }
+    const displayLastSeen = (): string => {
+        let min_ago = Math.floor(sinceLastSeen / 60000);
+        let hours_ago = Math.floor(min_ago / 60);
+        let days_ago = Math.floor(hours_ago / 24);
+        let text = "Last seen ";
+        if (days_ago >= 2) {
+            return text + days_ago + " days ago";
+        } else if (min_ago > 120) {
+            return text + hours_ago + " hours ago";
+        } else if (min_ago == 1) {
+            return text + "a minute ago";
+        } else if (min_ago < 1) {
+            return text + "just now";
+        } else if (min_ago > 1) {
+            return text + min_ago + " minutes ago";
         }
         return "gowno debilu";
     };
@@ -156,6 +160,25 @@ export const Friend = (props) => {
         window.location.href = activity.video_url;
         LS_SET_ATTACHED_TO(props.uuid);
     };
+
+    const displayProgress = (): string => {
+        const formatTime = (seconds: number): string => {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+
+            // prettier-ignore
+            if (hours < 1) {
+                    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+                } else {
+                    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+                }
+        };
+        let text =
+            formatTime(activity.video_pos) + " / " + formatTime(activity.video_duration);
+        return text;
+    };
+
     return (
         <div
             className={
@@ -179,19 +202,20 @@ export const Friend = (props) => {
                             } else if (status === "online") {
                                 return "Online";
                             } else {
-                                return getSinceLastSeenText();
+                                return displayLastSeen();
                             }
                         })()}
                     </div>
 
                     <div className="friend-item-center-progress">
-                        {/* 13:33 / 21:37 */}
-                        {(() => {
-                            // prettier-ignore
-                            if (status === "online" && activity.video_name) {
-                                return activity.video_pos + " / " + activity.video_duration;
-                            }
-                        })()}
+                        <div className="friend-item-center-playback-status">ico</div>
+                        <div className="friend-item-center-time">
+                            {(() => {
+                                if (status === "online" && activity.video_name) {
+                                    return displayProgress();
+                                }
+                            })()}
+                        </div>
                     </div>
                 </div>
             </div>

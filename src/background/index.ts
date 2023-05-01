@@ -1,10 +1,4 @@
-import type { ActivityI } from "~activity";
-import {
-    MSG_EVENTS,
-    type API_MSG_EVENTS,
-    type TAB_UPDATE,
-    type VID_DATA_RESPONSE
-} from "~types/messages";
+import { MSG_EVENTS, type API_MSG_EVENTS, type TAB_UPDATE } from "~types/messages";
 
 const trimTitle = (title: string): string => {
     if (title) {
