@@ -40,7 +40,7 @@
     flex-direction: row;
     font-size: 14px;
     width: 320px;
-    height: 64px;
+    height: 72px;
     /* box-sizing: border-box; */
     margin: 6px 8px 0px 8px;
     border: 1px solid rgb(48, 48, 48);
@@ -62,7 +62,7 @@
 }
 
 .watching {
-    color: rgb(116, 174, 34);
+    color: hsl(85, 69%, 45%);
 }
 
 .friend-item-left {
@@ -102,7 +102,7 @@
 .friend-item-center-flex-col .friend-item-center-name {
     font-size: 16px;
     margin-top: 4px;
-    margin-bottom: 2px;
+    height: 30%; /*shares height with acitvity and video-status*/
 }
 
 .offline .friend-item-center-flex-col .friend-item-center-name {
@@ -114,15 +114,30 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    margin-bottom: 2px;
     margin-right: 8px;
-    opacity: 80%;
+    opacity: 66%;
 }
 
-.friend-item-center .friend-item-center-progress {
+.friend-item-center-flex-col .friend-item-center-video-status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     font-size: 12px;
-    margin-bottom: 4px;
     opacity: 50%;
+    height: 30%; /*shares height with acitvity and video-status*/
+}
+
+.friend-item-center-video-status .friend-item-center-playback-status {
+    height: 100%;
+    margin-right: 2px;
+    margin-left: -2px;
+}
+
+.friend-item-center-video-status .friend-item-center-playback-status svg {
+    width: auto; /* maintain aspect ratio */
+    height: 16px; /* roughly font-size */
 }
 
 .friend-item-right {

@@ -5,10 +5,54 @@ import { MSG_EVENTS, type API_MSG_EVENTS, type VID_UPDATE } from "~types/message
 import { LS_SET_ATTACHED_TO } from "~local-storage";
 import av from "data-base64:/assets/alan_av.jpg";
 
-const VideoStatus = ({ is_playing, video_pos }) => {
+const VideoStatus = ({ is_playing, video_pos, video_duration }) => {
     console.log("💊 progress component 💊");
-    const [isPlaying, setIsPlaying] = useState<boolean>(is_playing);
+    // const [isPlaying, setIsPlaying] = useState<boolean>(is_playing);
     // const []
+
+    const displayTime = (): string => {
+        const formatTime = (seconds: number): string => {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+
+            // prettier-ignore
+            if (hours < 1) {
+                    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+            } else {
+                    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+            }
+        };
+        let text = formatTime(video_pos) + " / " + formatTime(video_duration);
+        return text;
+    };
+
+    return (
+        <div className="friend-item-center-video-status">
+            <div className="friend-item-center-playback-status">
+                {is_playing ? (
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        fill="currentColor"
+                        viewBox="0 0 256 256">
+                        <path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"></path>
+                    </svg>
+                ) : (
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        fill="currentColor"
+                        viewBox="0 0 256 256">
+                        <path d="M216,48V208a16,16,0,0,1-16,16H160a16,16,0,0,1-16-16V48a16,16,0,0,1,16-16h40A16,16,0,0,1,216,48ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Z"></path>
+                    </svg>
+                )}
+            </div>
+            <div className="friend-item-center-time">{displayTime()}</div>
+        </div>
+    );
 };
 
 export const Friend = (props) => {
@@ -161,24 +205,6 @@ export const Friend = (props) => {
         LS_SET_ATTACHED_TO(props.uuid);
     };
 
-    const displayProgress = (): string => {
-        const formatTime = (seconds: number): string => {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const remainingSeconds = Math.floor(seconds % 60);
-
-            // prettier-ignore
-            if (hours < 1) {
-                    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
-                } else {
-                    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
-                }
-        };
-        let text =
-            formatTime(activity.video_pos) + " / " + formatTime(activity.video_duration);
-        return text;
-    };
-
     return (
         <div
             className={
@@ -206,17 +232,13 @@ export const Friend = (props) => {
                             }
                         })()}
                     </div>
-
-                    <div className="friend-item-center-progress">
-                        <div className="friend-item-center-playback-status">ico</div>
-                        <div className="friend-item-center-time">
-                            {(() => {
-                                if (status === "online" && activity.video_name) {
-                                    return displayProgress();
-                                }
-                            })()}
-                        </div>
-                    </div>
+                    {status == "online" && activity.video_name && (
+                        <VideoStatus
+                            video_pos={activity.video_pos}
+                            video_duration={activity.video_duration}
+                            is_playing={activity.is_playing}
+                        />
+                    )}
                 </div>
             </div>
             <div className="friend-item-right">
@@ -231,26 +253,6 @@ export const Friend = (props) => {
                 </svg>
             </div>
         </div>
-
-        //     onClick={attach}
-        //     style={{
-        //         background: "black",
-        //         padding: 3,
-        //         color: "white",
-        //         fontSize: 10,
-        //         borderRadius: "10px",
-        //         height: 120,
-        //         width: 180,
-        //         marginTop: 8
-        //     }}
-        //     className="friend_item">
-        //     {props.nickname}
-        //         Last seen {(new Date().getTime() - lastSeen.getTime()) / 1000} sec. ago.
-        //     <div>VideoURL: {activity.video_url}</div>
-        //     <div>Title: {activity.video_name}</div>
-        //     <div>Playing: {activity.is_playing ? "Yes" : "No"}</div>
-        //     <div>At: {activity.video_pos}</div>
-        //     <div>{status}</div>
     );
 };
 
