@@ -6,11 +6,28 @@ import { LS_SET_ATTACHED_TO } from "~local-storage";
 import av from "data-base64:/assets/alan_av.jpg";
 
 const VideoStatus = ({ is_playing, video_pos, video_duration }) => {
-    console.log("💊 progress component 💊");
-    // const [isPlaying, setIsPlaying] = useState<boolean>(is_playing);
-    // const []
+    const [predictedVideoPos, setPredictedVideoPos] = useState<number>(video_pos);
 
-    const displayTime = (): string => {
+    // whenever props change, restart timer
+    // if this ends up desynchronizing often, for example when tab is going to sleep
+    // or due to js timers nature, employ a strategy with event timestamp
+    useEffect(() => {
+        setPredictedVideoPos(video_pos); // synchronized pred with real value
+        let interval: NodeJS.Timeout = null;
+        if (is_playing) {
+            interval = setInterval(() => {
+                console.log("gonna start timer with val:", video_pos, predictedVideoPos);
+                setPredictedVideoPos((predictedVideoPos) => predictedVideoPos + 1);
+            }, 1000);
+        }
+        return () => {
+            if (interval) {
+                clearInterval(interval);
+            }
+        };
+    }, [is_playing, video_pos]);
+
+    function displayTime(): string {
         const formatTime = (seconds: number): string => {
             const hours = Math.floor(seconds / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
@@ -18,14 +35,14 @@ const VideoStatus = ({ is_playing, video_pos, video_duration }) => {
 
             // prettier-ignore
             if (hours < 1) {
-                    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+                return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
             } else {
-                    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+                return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
             }
         };
-        let text = formatTime(video_pos) + " / " + formatTime(video_duration);
+        let text = formatTime(predictedVideoPos) + " / " + formatTime(video_duration);
         return text;
-    };
+    }
 
     return (
         <div className="friend-item-center-video-status">

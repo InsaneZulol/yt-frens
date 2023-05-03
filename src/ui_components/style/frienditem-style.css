@@ -123,13 +123,17 @@
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
     font-size: 12px;
     opacity: 50%;
     height: 30%; /*shares height with acitvity and video-status*/
 }
 
 .friend-item-center-video-status .friend-item-center-playback-status {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     height: 100%;
     margin-right: 2px;
     margin-left: -2px;
