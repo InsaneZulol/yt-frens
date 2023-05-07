@@ -5,19 +5,16 @@ import { MSG_EVENTS, type API_MSG_EVENTS, type VID_UPDATE } from "~types/message
 import { LS_SET_ATTACHED_TO } from "~local-storage";
 import av from "data-base64:/assets/alan_av.jpg";
 
-const VideoStatus = ({ is_playing, video_pos, video_duration }) => {
-    const [predictedVideoPos, setPredictedVideoPos] = useState<number>(video_pos);
+const VideoStatus = ({ is_playing, video_pos, video_duration, event_timestamp }) => {
+    const [predictedVideoPos, setPredictedVideoPos] = useState<number>(predictVideoPos());
 
     // whenever props change, restart timer
-    // if this ends up desynchronizing often, for example when tab is going to sleep
-    // or due to js timers nature, employ a strategy with event timestamp
     useEffect(() => {
         setPredictedVideoPos(video_pos); // synchronized pred with real value
         let interval: NodeJS.Timeout = null;
         if (is_playing) {
             interval = setInterval(() => {
-                console.log("gonna start timer with val:", video_pos, predictedVideoPos);
-                setPredictedVideoPos((predictedVideoPos) => predictedVideoPos + 1);
+                setPredictedVideoPos(predictVideoPos);
             }, 1000);
         }
         return () => {
@@ -26,6 +23,13 @@ const VideoStatus = ({ is_playing, video_pos, video_duration }) => {
             }
         };
     }, [is_playing, video_pos]);
+
+    function predictVideoPos(): number {
+        // predicted time =>
+        //      ile czasu minęło od event_timestamp + czas wideło
+        const time_elapsed_in_sec = (Date.now() - event_timestamp) / 1000;
+        return video_pos + time_elapsed_in_sec;
+    }
 
     function displayTime(): string {
         const formatTime = (seconds: number): string => {
@@ -254,6 +258,7 @@ export const Friend = (props) => {
                             video_pos={activity.video_pos}
                             video_duration={activity.video_duration}
                             is_playing={activity.is_playing}
+                            event_timestamp={activity.event_timestamp}
                         />
                     )}
                 </div>

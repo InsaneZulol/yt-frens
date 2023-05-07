@@ -27,12 +27,12 @@ export const Video = () => {
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message.event === MSG_EVENTS.VID_UPDATE) {
                 if (message.params.video_pos) {
-                    console.log(
-                        "vid controller received video pos",
-                        message.params.video_pos,
-                        "attached to",
-                        attachedTo.current
-                    );
+                    // console.log(
+                    //     "vid controller received video pos",
+                    //     message.params.video_pos,
+                    //     "attached to",
+                    //     attachedTo.current
+                    // );
                     if (attachedTo.current !== "") {
                         video.currentTime = message.params.video_pos;
                     }
@@ -63,14 +63,16 @@ export const Video = () => {
             console.debug("PAUSE ⏸️");
             UPDATE_ACTIVITY_STATE({
                 is_playing: false,
-                video_pos: video.currentTime
+                video_pos: video.currentTime,
+                event_timestamp: Date.now()
             });
         });
         video.addEventListener("play", (event) => {
             console.debug("PLAY ▶️");
             UPDATE_ACTIVITY_STATE({
                 is_playing: true,
-                video_pos: video.currentTime
+                video_pos: video.currentTime,
+                event_timestamp: Date.now()
             });
         });
         // todo: youtube by default pauses when you start
@@ -78,7 +80,10 @@ export const Video = () => {
         // events. Figure it out.
         video.addEventListener("seeked", (event) => {
             console.debug("video seeked ⌚");
-            UPDATE_ACTIVITY_STATE({ video_pos: video.currentTime });
+            UPDATE_ACTIVITY_STATE({
+                video_pos: video.currentTime,
+                event_timestamp: Date.now()
+            });
         });
         // video.addEventListener("volumechange", (event) => {
         //     if(video.muted)

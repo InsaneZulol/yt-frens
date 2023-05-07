@@ -6,13 +6,15 @@ export interface ActivityI {
     // user's tab info data
     video_url?: string;
     video_name?: string;
-    tab_muted?: boolean;
-    video_muted?: boolean;
     // user's video controller data
     is_playing?: boolean;
     video_duration?: number;
     video_pos?: number;
-    // event_timestamp: number;
+    event_timestamp?: number;
+
+    //  muted data - todo
+    tab_muted?: boolean;
+    video_muted?: boolean;
 }
 
 let ACTIVITY_STATE: ActivityI = {
@@ -22,7 +24,8 @@ let ACTIVITY_STATE: ActivityI = {
     video_muted: null,
     is_playing: null,
     video_duration: null,
-    video_pos: null
+    video_pos: null,
+    event_timestamp: null
 };
 
 export function UPDATE_ACTIVITY_STATE(new_activity: ActivityI): void {
@@ -57,7 +60,9 @@ export async function launchActivityCh() {
                 UPDATE_ACTIVITY_STATE({
                     video_url: message?.params?.url ?? ACTIVITY_STATE.video_url,
                     video_name: message?.params?.title ?? ACTIVITY_STATE.video_name,
+                    // po co te pola, kurwa zapomniałem
                     video_pos: message?.params?.video_pos ?? ACTIVITY_STATE.video_pos,
+                    event_timestamp: message?.params?.event_timestamp ?? ACTIVITY_STATE.event_timestamp,
                     video_duration: message?.params?.video_duration ?? ACTIVITY_STATE.video_duration,
                     video_muted: message?.params?.video_muted ?? ACTIVITY_STATE.video_muted,
                     is_playing: message?.params?.is_playing ?? ACTIVITY_STATE.is_playing
@@ -81,6 +86,7 @@ export async function launchActivityCh() {
                     console.log("wooow we created act channel");
                     listenToTabUpdates();
                     listenForRequests();
+                    broadcastActivity();
                 }
             });
         }
