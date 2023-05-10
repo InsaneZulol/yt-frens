@@ -26,7 +26,7 @@
         "eslint-plugin-react-hooks": "^4.6.0",
         "prettier": "2.8.3",
         "supabase": ">=1.8.1",
-        "typescript": "4.9.4"
+        "typescript": "5.0.4"
     },
     "manifest": {
         "host_permissions": [

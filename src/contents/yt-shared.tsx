@@ -6,6 +6,9 @@ import { isLoggedIn, logout, useSession } from "~auth";
 import { sendHeartbeat } from "~db";
 import LoginModal from "~ui_components/login-modal";
 import type { PlasmoGetStyle } from "plasmo";
+import { getFriends, loadFriendsData, subscribeToFriendsState } from "~friends-state";
+import { supabase } from "~store";
+import { Friend } from "~ui_components/friend-item";
 
 export const config: PlasmoCSConfig = {
     matches: ["https://www.youtube.com/*", "http://www.youtube.com/*"],
@@ -15,6 +18,35 @@ export const config: PlasmoCSConfig = {
 
 // IIFE
 (async function init() {
+    async function connect() {
+        loadFriendsData()
+            .then(() => {
+                subscribeToFriendsState();
+            })
+            .catch((error) => {
+                console.error("Error fetching friends: ", error);
+            });
+        // - if friends > 0?
+        // - function monitorStatus()
+        supabase
+            .channel("changes")
+            .on(
+                "postgres_changes",
+                {
+                    event: "UPDATE",
+                    schema: "public",
+                    table: "user_data",
+                    filter: `user_id=in.(${getFriends().join(", ")})` //no źle, nie ["u1", "u2"], tylko to array obiektów js
+                },
+                (payload) => {
+                    console.log("[table  update]");
+                    // setLastSeen(new Date(payload.new.last_seen)); // online/offline
+                    //
+                }
+            )
+            .subscribe();
+    }
+
     async function initiateHeartbeat() {
         sendHeartbeat();
         setInterval(sendHeartbeat, 15000);
