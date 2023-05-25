@@ -1,42 +1,26 @@
 import type { RealtimeChannel } from "@supabase/supabase-js";
-import { useState, useEffect, useCallback } from "react";
-import { fetchMyFriendsFromDB } from "~db";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "~store";
-import { Friend } from "./friend-item";
+import { FriendItem } from "./friend-item";
+import { Friend, getFriends } from "~friends-state";
 
 const FriendList = () => {
     console.log("friend list rendered");
-    const [friends, setFriends] = useState([]);
-    const [postgresChangesCh, setPostgresChangesCh] = useState<RealtimeChannel>(null);
+    const friends = useRef<Array<Friend>>([]);
 
-    const fetchFriends = async () => {
-        const friends_arr = await fetchMyFriendsFromDB();
-        setFriends(friends_arr);
-    };
+    const fetchFriends = async () => {};
+    // add message listener for onFriendsLoaded
 
     useEffect(() => {
-        fetchFriends().then(() => {
-            setPostgresChangesCh(supabase.channel("changes"));
-        });
+        friends.current = getFriends();
     }, []);
 
-    useEffect(() => {
-        console.debug("re/subscribed to friend status ch(postgres)");
-        if (postgresChangesCh) {
-            postgresChangesCh.subscribe(async (status) => {
-                if (status === "SUBSCRIBED") console.log("subbed postgres changes");
-                else console.error("no i huj", status);
-            });
-        }
-    }, [postgresChangesCh]);
-
-    const listItems = friends.map((friend, index) => (
-        <Friend
-            key={friend.user_id}
-            uuid={friend.user_id}
-            nickname={friend.nickname}
-            lastSeen={friend.last_seen}
-            realtimeChannel={postgresChangesCh}></Friend>
+    const listItems = friends.current.map((friend, index) => (
+        <FriendItem
+            key={index}
+            uuid={friend.user_data.user_id}
+            nickname={friend.user_data.nickname}
+            lastSeen={friend.user_data.last_seen}></FriendItem>
     ));
 
     return <div>{listItems}</div>;

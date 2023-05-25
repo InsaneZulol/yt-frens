@@ -53,3 +53,4 @@ export default interface Database {
         };
     };
 }
+export type UserData = Database["public"]["Tables"]["user_data"]["Row"];

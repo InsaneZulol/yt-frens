@@ -1,10 +1,10 @@
 import { supabase } from "~store";
-import type view_my_friends from "~types/supabase";
+import type { UserData } from "~types/supabase";
 
 export var heartbeat_timer_begin = null;
 
 // returns array of objects
-export async function fetchMyFriendsFromDB(): Promise<Array<view_my_friends>> {
+export async function fetchMyFriendsFromDB(): Promise<Array<UserData>> {
     let query = supabase.from("view_my_friends").select("*");
     const { data, error } = await query;
     if (error) console.error("error querying db", error);

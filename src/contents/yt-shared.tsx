@@ -20,9 +20,7 @@ export const config: PlasmoCSConfig = {
 (async function init() {
     async function connect() {
         loadFriendsData()
-            .then(() => {
-                subscribeToFriendsState();
-            })
+            .then(() => subscribeToFriendsState())
             .catch((error) => {
                 console.error("Error fetching friends: ", error);
             });

@@ -2,10 +2,10 @@ import type { RealtimeChannel } from "@supabase/supabase-js";
 import type { ActivityI } from "~activity";
 import { fetchMyFriendsFromDB } from "~db";
 import { supabase } from "~store";
-import type view_my_friends from "~types/supabase";
+import type { UserData } from "~types/supabase";
 
-interface Friend {
-    user_data: view_my_friends;
+export interface Friend {
+    user_data: UserData;
     state_ch: RealtimeChannel;
     state: ActivityI;
 }
@@ -22,11 +22,12 @@ export const getFriends = (): Array<Friend> => {
 
 // just call it once at the start to get initial friends data
 export async function loadFriendsData() {
+    // : sprawdz czy to fetch teraz dziala, zmieniles typ
     const fetchedFriends = await fetchMyFriendsFromDB();
 
-    fetchedFriends.forEach((friendData) => {
+    fetchedFriends.forEach((friend_data) => {
         const friend: Friend = {
-            user_data: friendData,
+            user_data: friend_data,
             state_ch: null,
             state: {}
         };
@@ -40,8 +41,7 @@ export async function subscribeToFriendsState() {
             friend.state_ch = supabase
                 .channel(
                     // wtf fix that type
-                    "state_ch:" +
-                        friend.user_data.public.Views.view_my_friends.Row.user_id
+                    "state_ch:" + friend.user_data.user_id
                 )
                 .subscribe();
             // remember to add event handlers

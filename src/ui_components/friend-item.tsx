@@ -76,7 +76,7 @@ const VideoStatus = ({ is_playing, video_pos, video_duration, event_timestamp })
     );
 };
 
-export const Friend = (props) => {
+export const FriendItem = (props) => {
     console.log("💥rendering ", props.nickname, " component💥");
     const [lastSeen, setLastSeen] = useState<Date>(new Date(props.lastSeen)); // timestamp in ms epoch of last heartbeat
     const [sinceLastSeen, setSinceLastSeen] = useState<number>(
